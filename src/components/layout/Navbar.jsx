@@ -1,1433 +1,354 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ArrowRight,
   ArrowUp,
   ArrowUpRight,
   Menu,
   MessageCircle,
-  Moon,
-  Search,
-  Sun,
   X,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-
 import TrackOwlsLogo from "./TrackOwlsLogo";
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
 const navItems = [
-  {
-    name: "Home",
-    path: "/",
-  },
-  {
-    name: "How it works",
-    path: "/how-it-works",
-  },
-  {
-    name: "About",
-    path: "/about",
-  },
-  {
-    name: "Services",
-    path: "/services",
-  },
-  {
-    name: "Monitoring Tools",
-    path: "/monitoring-tools",
-  },
-  {
-    name: "Plans",
-    path: "/plans",
-  },
-  {
-    name: "Contact",
-    path: "/contact",
-  },
+  { name: "Home", path: "/" },
+  { name: "How it works", path: "/how-it-works" },
+  { name: "About", path: "/about" },
+  { name: "Solutions", path: "/services" },
+  { name: "Industries", path: "/industries" },
+  { name: "Platform", path: "/platform" },
+  { name: "Insights", path: "/insights" },
 ];
 
-/* =========================================================
-   WHATSAPP
-========================================================= */
-
 const WHATSAPP_NUMBER = "91XXXXXXXXXX";
-
-/* =========================================================
-   NAVBAR
-========================================================= */
 
 export default function Navbar() {
   const location = useLocation();
 
-  /* =======================================================
-     THEME
-  ======================================================= */
-
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("trackowls-theme");
-
-    return savedTheme ? savedTheme === "dark" : true;
-  });
-
-  /* =======================================================
-     SEARCH
-  ======================================================= */
-
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-
-  /* =======================================================
-     MOBILE MENU
-  ======================================================= */
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  /* =======================================================
-     WHATSAPP
-  ======================================================= */
-
-  const [whatsappOpen, setWhatsappOpen] = useState(false);
-
-  /* =======================================================
-     SCROLL TO TOP
-  ======================================================= */
-
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  /* =======================================================
-     APPLY THEME
-  ======================================================= */
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-
-    localStorage.setItem(
-      "trackowls-theme",
-      darkMode ? "dark" : "light"
-    );
-  }, [darkMode]);
-
-  /* =======================================================
-     THEME CHANGE
-  ======================================================= */
-
-  const changeTheme = (dark) => {
-    setDarkMode(dark);
-
-    document.documentElement.classList.toggle("dark", dark);
-
-    localStorage.setItem(
-      "trackowls-theme",
-      dark ? "dark" : "light"
-    );
-  };
-
-  /* =======================================================
-     ACTIVE LINK
-  ======================================================= */
+  const closeMenu = () => setMobileMenuOpen(false);
 
   const isActive = (path) => {
-    if (path === "/") {
-      return location.pathname === "/";
-    }
-
-    return location.pathname.startsWith(path);
+    if (path === "/") return location.pathname === "/";
+    return (
+      location.pathname === path ||
+      location.pathname.startsWith(`${path}/`)
+    );
   };
 
-  /* =======================================================
-     CLOSE PANELS WHEN ROUTE CHANGES
-  ======================================================= */
+  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    "Hello TrackOwls, I would like to know more about your anti-piracy services."
+  )}`;
 
   useEffect(() => {
-    setSearchOpen(false);
-    setSearchValue("");
-    setMobileMenuOpen(false);
-    setWhatsappOpen(false);
+    closeMenu();
   }, [location.pathname]);
 
-  /* =======================================================
-     CLOSE MOBILE MENU ON RESIZE
-  ======================================================= */
-
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1280) {
-        setMobileMenuOpen(false);
-      }
+    if (!mobileMenuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") closeMenu();
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("keydown", handleEscape);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
     };
-  }, []);
-
-  /* =======================================================
-     SCROLL LISTENER
-  ======================================================= */
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
+      setShowScrollTop(window.scrollY > 350);
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
 
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* =======================================================
-     SCROLL TO TOP
-  ======================================================= */
+  const desktopLinkClass = ({ isActive: active }) =>
+    [
+      "relative inline-flex min-h-[42px] items-center justify-center",
+      "whitespace-nowrap rounded-full px-2.5 xl:px-3",
+      "font-['Roboto',sans-serif] text-[12px] xl:text-[13px]",
+      "transition-all duration-200",
+      "focus-visible:outline-none focus-visible:ring-2",
+      "focus-visible:ring-[#8BB630] focus-visible:ring-offset-2",
+      active
+        ? "bg-[#EAF3D9] font-bold !text-[#45651A]"
+        : "bg-transparent font-medium !text-[#42483A] hover:bg-[#F2F6EA] hover:!text-[#45651A]",
+    ].join(" ");
 
-  const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-  };
-
-  /* =======================================================
-     MOBILE NAV CLICK
-  ======================================================= */
-
-  const handleMobileNavigation = () => {
-    setMobileMenuOpen(false);
-    setSearchOpen(false);
-  };
-
-  /* =======================================================
-     RETURN
-  ======================================================= */
+  const mobileLinkClass = (active) =>
+    [
+      "mb-1 flex min-h-[49px] w-full items-center justify-between",
+      "rounded-xl border px-4 py-3 text-sm transition-all duration-200",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BB630]",
+      active
+        ? "border-[#DCE9C7] bg-[#F0F6E5] font-semibold text-[#45651A]"
+        : "border-transparent font-medium text-[#42483A] hover:border-[#E6EDD9] hover:bg-[#F7F9F3]",
+    ].join(" ");
 
   return (
     <>
-      {/* =====================================================
-          FULL WIDTH NAVBAR
-      ===================================================== */}
+      {/* LIGHT MODE NAVBAR */}
+      <header className="fixed inset-x-0 top-0 z-[1000] w-full font-['Roboto',sans-serif] text-[#343A2D]">
+        <div className="w-full border-b border-[#E6EBDD] bg-white/95 shadow-[0_4px_18px_rgba(50,70,25,0.07)] backdrop-blur-xl">
+          <div className="mx-auto flex min-h-[84px] w-full max-w-[1420px] items-center justify-between gap-3 px-4 py-2 sm:min-h-[90px] sm:px-6 lg:min-h-[94px] lg:px-8 xl:gap-5 xl:px-10 2xl:px-14">
+            {/* BIGGER LOGO */}
+            <Link
+              to="/"
+              onClick={closeMenu}
+              aria-label="TrackOwls home"
+              className="flex h-[70px] w-[205px] shrink-0 items-center justify-start overflow-visible rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BB630] sm:h-[76px] sm:w-[245px] md:w-[265px] lg:h-[80px] lg:w-[250px] xl:w-[285px] 2xl:w-[310px]"
+            >
+              <div className="trackowls-logo-holder flex h-full w-full min-w-0 items-center justify-start">
+                <TrackOwlsLogo />
+              </div>
+            </Link>
 
-      <header
-        className="
-          fixed
-          left-0
-          right-0
-          top-0
-          z-[1000]
-          w-full
-        "
-      >
-        {/* ===================================================
-            NAVBAR CONTAINER
-        =================================================== */}
+            {/* DESKTOP NAVIGATION */}
+            <nav
+              aria-label="Main navigation"
+              className="hidden min-w-0 flex-1 lg:block"
+            >
+              <div className="mx-auto flex w-fit max-w-full items-center justify-center gap-0.5 rounded-full border border-[#E8EDDF] bg-[#FAFCF7] p-1 xl:gap-1 xl:p-1.5">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    end={item.path === "/"}
+                    className={desktopLinkClass}
+                    aria-current={
+                      isActive(item.path) ? "page" : undefined
+                    }
+                  >
+                    {item.name}
+                  </NavLink>
+                ))}
+              </div>
+            </nav>
 
+            {/* CONSULTATION BUTTON */}
+            <Link
+              to="/request-demo"
+              onClick={closeMenu}
+              className="group hidden h-[46px] shrink-0 items-center gap-2 rounded-full border border-[#DCE7CB] bg-[#F8FAF4] py-1 pl-4 pr-1 text-[#45651A] transition-all duration-300 hover:border-[#8BB630] hover:bg-[#EFF5E4] xl:flex 2xl:gap-3 2xl:pl-5"
+            >
+              <span className="whitespace-nowrap text-[12px] font-bold 2xl:text-[13px]">
+                Request a consultation
+              </span>
+
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#8BB630] text-white transition-transform duration-300 group-hover:translate-x-0.5">
+                <ArrowRight size={18} strokeWidth={2} />
+              </span>
+            </Link>
+
+            {/* MOBILE MENU BUTTON */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              aria-label={
+                mobileMenuOpen ? "Close navigation" : "Open navigation"
+              }
+              aria-expanded={mobileMenuOpen}
+              aria-controls="trackowls-mobile-navigation"
+              className="ml-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#E1E8D7] bg-white text-[#526D29] shadow-sm transition hover:border-[#8BB630] hover:bg-[#F2F6EA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BB630] lg:hidden"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
+
+        {/* MOBILE AND TABLET MENU */}
         <div
-          className="
-            relative
-            h-[82px]
-            w-full
-            overflow-visible
-            border-b
-            border-black/[0.08]
-            bg-[#F8FAF5]
-            shadow-[0_12px_40px_rgba(20,40,25,0.08)]
-            dark:border-white/[0.08]
-            dark:bg-[#070A07]
-            dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)]
-            lg:h-[88px]
-          "
+          id="trackowls-mobile-navigation"
+          aria-hidden={!mobileMenuOpen}
+          className={[
+            "fixed inset-x-0 bottom-0 z-[1001] overflow-y-auto",
+            "border-t border-[#E3EAD8] bg-white shadow-[0_16px_35px_rgba(50,70,25,0.12)]",
+            "transition-[transform,opacity,visibility] duration-200 ease-out lg:hidden",
+            mobileMenuOpen
+              ? "visible translate-y-0 opacity-100"
+              : "invisible -translate-y-2 opacity-0 pointer-events-none",
+          ].join(" ")}
+          style={{
+            top: "84px",
+            maxHeight: "calc(100dvh - 84px)",
+          }}
         >
-          {/* =================================================
-              SUBTLE LIGHT GLOW
-          ================================================= */}
+          <div className="mx-auto flex min-h-full w-full max-w-[700px] flex-col px-4 pb-6 pt-5 sm:px-6">
+            <div className="mb-4 flex items-center justify-between border-b border-[#E9EDE3] pb-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#63851E]">
+                  Explore TrackOwls
+                </p>
+                <p className="mt-1.5 text-xs text-[#777D6E]">
+                  Scan · Detect · Remove · Protect
+                </p>
+              </div>
 
-          <div
-            className="
-              pointer-events-none
-              absolute
-              left-[-100px]
-              top-1/2
-              h-[150px]
-              w-[330px]
-              -translate-y-1/2
-              rounded-full
-              bg-[#ADD132]/[0.07]
-              blur-[75px]
-              dark:bg-[#ADD132]/[0.09]
-            "
-          />
-
-          {/* =================================================
-              SUBTLE RIGHT GLOW
-          ================================================= */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              right-[4%]
-              top-1/2
-              h-[110px]
-              w-[280px]
-              -translate-y-1/2
-              rounded-full
-              bg-[#ADD132]/[0.04]
-              blur-[70px]
-              dark:bg-[#ADD132]/[0.06]
-            "
-          />
-
-          {/* =================================================
-              TOP ACCENT LINE
-          ================================================= */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              left-0
-              right-0
-              top-0
-              h-px
-              bg-gradient-to-r
-              from-transparent
-              via-[#ADD132]/60
-              to-transparent
-            "
-          />
-
-          {/* =================================================
-              BOTTOM ACCENT LINE
-          ================================================= */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              bottom-0
-              left-0
-              right-0
-              h-px
-              bg-gradient-to-r
-              from-transparent
-              via-[#ADD132]/35
-              to-transparent
-            "
-          />
-
-          {/* =================================================
-              NAV CONTENT
-          ================================================= */}
-
-          <div
-            className="
-              relative
-              z-20
-              flex
-              h-full
-              w-full
-              items-center
-              px-4
-              sm:px-6
-              lg:px-8
-              xl:px-10
-              2xl:px-14
-            "
-          >
-            {/* =================================================
-                LOGO
-                WIDER / NO BOX / NO TEXT
-            ================================================= */}
-
-            {/* =================================================
-    LOGO
-================================================= */}
-
-<div
-  className="
-    relative
-    flex
-    h-full
-    w-[174px]
-    shrink-0
-    items-center
-    overflow-visible
-    sm:w-[205px]
-    md:w-[220px]
-    lg:w-[250px]
-    xl:w-[275px]
-    2xl:w-[290px]
-  "
->
-  <TrackOwlsLogo />
-</div>
-
-            {/* =================================================
-                DESKTOP NAVIGATION
-            ================================================= */}
+              <button
+                type="button"
+                onClick={closeMenu}
+                aria-label="Close navigation menu"
+                tabIndex={mobileMenuOpen ? 0 : -1}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E4E9DC] bg-white text-[#526D29] transition hover:bg-[#F2F6EA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BB630]"
+              >
+                <X size={18} />
+              </button>
+            </div>
 
             <nav
-              className="
-                ml-auto
-                hidden
-                h-full
-                items-center
-                gap-1
-                xl:flex
-              "
+              aria-label="Tablet and mobile navigation"
+              className="flex flex-col"
             >
-              {navItems.map((item) => {
+              {navItems.map((item, index) => {
                 const active = isActive(item.path);
 
                 return (
-                  <Link
+                  <NavLink
                     key={item.path}
                     to={item.path}
-                    className={`
-                      group
-                      relative
-                      flex
-                      h-[46px]
-                      items-center
-                      justify-center
-                      whitespace-nowrap
-                      rounded-full
-                      px-[13px]
-                      text-[13px]
-                      font-semibold
-                      tracking-[-0.01em]
-                      transition-all
-                      duration-300
-
-                      ${
-                        active
-                          ? `
-                            bg-[#ADD132]/15
-                            text-[#294300]
-                            dark:bg-[#ADD132]/15
-                            dark:text-[#DFFF72]
-                          `
-                          : `
-                            text-[#182219]
-                            hover:bg-black/[0.04]
-                            hover:text-[#101800]
-                            dark:text-white/75
-                            dark:hover:bg-white/[0.06]
-                            dark:hover:text-white
-                          `
-                      }
-                    `}
+                    end={item.path === "/"}
+                    onClick={closeMenu}
+                    tabIndex={mobileMenuOpen ? 0 : -1}
+                    aria-current={active ? "page" : undefined}
+                    className={mobileLinkClass(active)}
                   >
-                    {item.name}
-
-                    {/* Active indicator */}
-
-                    {active && (
+                    <span className="flex items-center gap-3">
                       <span
-                        className="
-                          absolute
-                          bottom-[4px]
-                          left-1/2
-                          h-[3px]
-                          w-[22px]
-                          -translate-x-1/2
-                          rounded-full
-                          bg-[#ADD132]
-                          shadow-[0_0_12px_rgba(173,209,50,0.85)]
-                        "
-                      />
-                    )}
-                  </Link>
+                        className={[
+                          "w-5 text-[10px] font-bold tracking-wider",
+                          active ? "text-[#63851E]" : "text-[#A0A697]",
+                        ].join(" ")}
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>{item.name}</span>
+                    </span>
+
+                    <ArrowUpRight
+                      size={17}
+                      className={active ? "text-[#63851E]" : "text-[#969C8B]"}
+                    />
+                  </NavLink>
                 );
               })}
             </nav>
 
-            {/* =================================================
-                RIGHT ACTION AREA
-            ================================================= */}
-
-            <div
-              className="
-                ml-3
-                hidden
-                shrink-0
-                items-center
-                gap-2
-                border-l
-                border-black/10
-                pl-3
-                dark:border-white/10
-                xl:flex
-                xl:ml-4
-                xl:pl-4
-              "
+            {/* MOBILE CONSULTATION BUTTON */}
+            <Link
+              to="/request-demo"
+              onClick={closeMenu}
+              tabIndex={mobileMenuOpen ? 0 : -1}
+              className="group mt-4 flex min-h-[52px] w-full items-center justify-between gap-3 rounded-full border border-[#DCE7CB] bg-[#F5F8EF] py-1 pl-5 pr-1 text-[#45651A] transition hover:bg-[#EDF4E0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BB630] focus-visible:ring-offset-2"
             >
-              {/* =================================================
-                  SEARCH
-              ================================================= */}
+              <span className="text-sm font-bold">
+                Request a consultation
+              </span>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#8BB630] text-white transition-transform duration-300 group-hover:translate-x-0.5">
+                <ArrowRight size={19} />
+              </span>
+            </Link>
 
-              <button
-                type="button"
-                onClick={() => setSearchOpen((prev) => !prev)}
-                aria-label={
-                  searchOpen ? "Close search" : "Open search"
-                }
-                className="
-                  flex
-                  h-[44px]
-                  w-[44px]
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-black/10
-                  bg-white/40
-                  text-[#182219]
-                  backdrop-blur-md
-                  transition-all
-                  duration-300
-                  hover:border-[#ADD132]/60
-                  hover:bg-[#ADD132]
-                  hover:text-[#101800]
-                  dark:border-white/10
-                  dark:bg-white/[0.03]
-                  dark:text-white
-                  dark:hover:border-[#ADD132]
-                  dark:hover:bg-[#ADD132]
-                  dark:hover:text-[#101800]
-                "
-              >
-                {searchOpen ? (
-                  <X
-                    size={19}
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <Search
-                    size={19}
-                    strokeWidth={1.9}
-                  />
-                )}
-              </button>
-
-              {/* =================================================
-                  THEME SWITCH
-              ================================================= */}
-
-              <div
-                className="
-                  flex
-                  h-[44px]
-                  items-center
-                  gap-1
-                  rounded-full
-                  border
-                  border-black/10
-                  bg-white/40
-                  p-1
-                  backdrop-blur-md
-                  dark:border-white/10
-                  dark:bg-white/[0.03]
-                "
-              >
-                {/* LIGHT */}
-
-                <button
-                  type="button"
-                  onClick={() => changeTheme(false)}
-                  aria-label="Switch to light mode"
-                  aria-pressed={!darkMode}
-                  className={`
-                    flex
-                    h-[36px]
-                    w-[36px]
-                    items-center
-                    justify-center
-                    rounded-full
-                    transition-all
-                    duration-300
-
-                    ${
-                      !darkMode
-                        ? `
-                          bg-[#ADD132]
-                          text-[#101800]
-                          shadow-[0_0_16px_rgba(173,209,50,0.40)]
-                        `
-                        : `
-                          text-[#667067]
-                          hover:text-[#182219]
-                          dark:text-white/45
-                          dark:hover:text-white
-                        `
-                    }
-                  `}
-                >
-                  <Sun
-                    size={17}
-                    strokeWidth={2}
-                  />
-                </button>
-
-                {/* DARK */}
-
-                <button
-                  type="button"
-                  onClick={() => changeTheme(true)}
-                  aria-label="Switch to dark mode"
-                  aria-pressed={darkMode}
-                  className={`
-                    flex
-                    h-[36px]
-                    w-[36px]
-                    items-center
-                    justify-center
-                    rounded-full
-                    transition-all
-                    duration-300
-
-                    ${
-                      darkMode
-                        ? `
-                          bg-[#ADD132]
-                          text-[#101800]
-                          shadow-[0_0_16px_rgba(173,209,50,0.40)]
-                        `
-                        : `
-                          text-[#667067]
-                          hover:text-[#182219]
-                          dark:text-white/45
-                          dark:hover:text-white
-                        `
-                    }
-                  `}
-                >
-                  <Moon
-                    size={17}
-                    strokeWidth={2}
-                  />
-                </button>
-              </div>
-
-              {/* =================================================
-                  FREE AUDIT
-              ================================================= */}
-
-              <Link
-                to="/request-demo"
-                className="
-                  group
-                  flex
-                  h-[48px]
-                  items-center
-                  gap-3
-                  rounded-full
-                  bg-gradient-to-r
-                  from-[#C9EF48]
-                  to-[#ADD132]
-                  pl-5
-                  pr-1.5
-                  text-[13px]
-                  font-extrabold
-                  text-[#101800]
-                  shadow-[0_8px_28px_rgba(173,209,50,0.20)]
-                  transition-all
-                  duration-300
-                  hover:-translate-y-0.5
-                  hover:shadow-[0_12px_38px_rgba(173,209,50,0.35)]
-                "
-              >
-                <span>
-                  Free audit
-                </span>
-
-                <span
-                  className="
-                    flex
-                    h-[38px]
-                    w-[38px]
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-[#071006]
-                    text-white
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-0.5
-                  "
-                >
-                  <ArrowRight
-                    size={17}
-                    strokeWidth={2}
-                  />
-                </span>
-              </Link>
-            </div>
-
-            {/* =================================================
-                MOBILE ACTIONS
-            ================================================= */}
-
-            <div
-              className="
-                ml-auto
-                flex
-                items-center
-                gap-2
-                xl:hidden
-              "
-            >
-              {/* Mobile theme */}
-
-              <button
-                type="button"
-                onClick={() => changeTheme(!darkMode)}
-                aria-label={
-                  darkMode
-                    ? "Switch to light mode"
-                    : "Switch to dark mode"
-                }
-                className="
-                  flex
-                  h-[42px]
-                  w-[42px]
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-black/10
-                  bg-white/50
-                  text-[#182219]
-                  backdrop-blur-md
-                  transition-all
-                  hover:border-[#ADD132]
-                  hover:bg-[#ADD132]
-                  hover:text-[#101800]
-                  dark:border-white/10
-                  dark:bg-white/[0.04]
-                  dark:text-white
-                  dark:hover:bg-[#ADD132]
-                  dark:hover:text-[#101800]
-                  sm:flex
-                "
-              >
-                {darkMode ? (
-                  <Moon
-                    size={18}
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <Sun
-                    size={18}
-                    strokeWidth={2}
-                  />
-                )}
-              </button>
-
-              {/* Mobile search */}
-
-              <button
-                type="button"
-                onClick={() => setSearchOpen((prev) => !prev)}
-                aria-label={
-                  searchOpen
-                    ? "Close search"
-                    : "Open search"
-                }
-                className="
-                  hidden
-                  h-[42px]
-                  w-[42px]
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-black/10
-                  bg-white/50
-                  text-[#182219]
-                  backdrop-blur-md
-                  transition-all
-                  hover:border-[#ADD132]
-                  hover:bg-[#ADD132]
-                  hover:text-[#101800]
-                  dark:border-white/10
-                  dark:bg-white/[0.04]
-                  dark:text-white
-                  dark:hover:bg-[#ADD132]
-                  dark:hover:text-[#101800]
-                  sm:flex
-                "
-              >
-                {searchOpen ? (
-                  <X size={18} />
-                ) : (
-                  <Search size={18} />
-                )}
-              </button>
-
-              {/* Mobile menu */}
-
-              <button
-                type="button"
-                onClick={() =>
-                  setMobileMenuOpen((prev) => !prev)
-                }
-                aria-label={
-                  mobileMenuOpen
-                    ? "Close menu"
-                    : "Open menu"
-                }
-                aria-expanded={mobileMenuOpen}
-                className="
-                  flex
-                  h-[44px]
-                  w-[44px]
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-black/10
-                  bg-white/50
-                  text-[#182219]
-                  backdrop-blur-md
-                  transition-all
-                  hover:border-[#ADD132]
-                  hover:bg-[#ADD132]
-                  hover:text-[#101800]
-                  dark:border-white/10
-                  dark:bg-white/[0.04]
-                  dark:text-white
-                  dark:hover:bg-[#ADD132]
-                  dark:hover:text-[#101800]
-                "
-              >
-                {mobileMenuOpen ? (
-                  <X size={20} />
-                ) : (
-                  <Menu size={20} />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* =================================================
-              SEARCH PANEL
-          ================================================= */}
-
-          <div
-            className={`
-              absolute
-              left-4
-              right-4
-              top-[92px]
-              z-40
-              overflow-hidden
-              rounded-[20px]
-              border
-              border-black/10
-              bg-white/95
-              p-2
-              shadow-[0_20px_60px_rgba(20,40,25,0.18)]
-              backdrop-blur-2xl
-              transition-all
-              duration-300
-              dark:border-[#ADD132]/20
-              dark:bg-[#06100B]/96
-              dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)]
-              sm:left-6
-              sm:right-6
-              lg:left-8
-              lg:right-8
-
-              ${
-                searchOpen
-                  ? "max-h-[120px] opacity-100"
-                  : "pointer-events-none max-h-0 !p-0 opacity-0"
-              }
-            `}
-          >
-            <div
-              className="
-                flex
-                h-[54px]
-                items-center
-                gap-3
-                rounded-[15px]
-                border
-                border-black/[0.07]
-                bg-black/[0.025]
-                px-4
-                dark:border-white/[0.07]
-                dark:bg-white/[0.035]
-              "
-            >
-              <Search
-                size={19}
-                strokeWidth={1.8}
-                className="
-                  shrink-0
-                  text-[#648A00]
-                  dark:text-[#ADD132]
-                "
-              />
-
-              <input
-                type="text"
-                value={searchValue}
-                onChange={(e) =>
-                  setSearchValue(e.target.value)
-                }
-                placeholder="Search TrackOwls..."
-                autoFocus={searchOpen}
-                className="
-                  min-w-0
-                  flex-1
-                  border-0
-                  bg-transparent
-                  text-sm
-                  text-[#182219]
-                  outline-none
-                  placeholder:text-[#7C867F]
-                  dark:text-white
-                  dark:placeholder:text-white/35
-                "
-              />
-
-              {searchValue && (
-                <button
-                  type="button"
-                  onClick={() => setSearchValue("")}
-                  aria-label="Clear search"
-                  className="
-                    flex
-                    h-7
-                    w-7
-                    items-center
-                    justify-center
-                    rounded-full
-                    text-[#68736C]
-                    transition-all
-                    hover:bg-black/5
-                    hover:text-black
-                    dark:text-white/40
-                    dark:hover:bg-white/10
-                    dark:hover:text-white
-                  "
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-
-            {searchValue && (
-              <div
-                className="
-                  flex
-                  gap-1.5
-                  px-3
-                  pb-1
-                  pt-2
-                  text-[11px]
-                  text-[#718078]
-                  dark:text-white/45
-                "
-              >
-                <span>
-                  Searching for
-                </span>
-
-                <strong
-                  className="
-                    text-[#182219]
-                    dark:text-white
-                  "
-                >
-                  {searchValue}
-                </strong>
-              </div>
-            )}
-          </div>
-
-          {/* =================================================
-              MOBILE MENU
-          ================================================= */}
-
-          <div
-            className={`
-              absolute
-              left-3
-              right-3
-              top-[92px]
-              z-30
-              overflow-hidden
-              rounded-[24px]
-              border
-              border-black/10
-              bg-[#F8FAF5]/98
-              p-2
-              shadow-[0_25px_70px_rgba(20,40,25,0.16)]
-              backdrop-blur-2xl
-              transition-all
-              duration-300
-              dark:border-white/10
-              dark:bg-[#07100B]/98
-              dark:shadow-[0_25px_70px_rgba(0,0,0,0.50)]
-
-              ${
-                mobileMenuOpen
-                  ? "visible translate-y-0 opacity-100"
-                  : "invisible -translate-y-3 opacity-0"
-              }
-            `}
-          >
-            <div
-              className="
-                max-h-[calc(100vh-115px)]
-                overflow-y-auto
-                p-2
-              "
-            >
-              {/* Mobile navigation */}
-
-              <div className="space-y-1">
-                {navItems.map((item) => {
-                  const active = isActive(item.path);
-
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={handleMobileNavigation}
-                      className={`
-                        flex
-                        min-h-[48px]
-                        items-center
-                        justify-between
-                        rounded-[14px]
-                        px-4
-                        text-[14px]
-                        font-semibold
-                        transition-all
-
-                        ${
-                          active
-                            ? `
-                              bg-[#ADD132]/15
-                              text-[#416000]
-                              dark:bg-[#ADD132]/15
-                              dark:text-[#DFFF72]
-                            `
-                            : `
-                              text-[#263129]
-                              hover:bg-black/[0.04]
-                              dark:text-white/75
-                              dark:hover:bg-white/[0.06]
-                              dark:hover:text-white
-                            `
-                        }
-                      `}
-                    >
-                      <span>
-                        {item.name}
-                      </span>
-
-                      <ArrowRight
-                        size={16}
-                        className={`
-                          transition-transform
-                          duration-300
-                          ${
-                            active
-                              ? "translate-x-0 text-[#719800] dark:text-[#ADD132]"
-                              : "text-black/25 dark:text-white/25"
-                          }
-                        `}
-                      />
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Mobile divider */}
-
-              <div
-                className="
-                  my-3
-                  h-px
-                  bg-black/[0.07]
-                  dark:bg-white/[0.08]
-                "
-              />
-
-              {/* Mobile Free Audit */}
-
-              <Link
-                to="/request-demo"
-                onClick={handleMobileNavigation}
-                className="
-                  group
-                  flex
-                  h-[52px]
-                  items-center
-                  justify-between
-                  rounded-full
-                  bg-gradient-to-r
-                  from-[#C9EF48]
-                  to-[#ADD132]
-                  pl-5
-                  pr-1.5
-                  text-[13px]
-                  font-extrabold
-                  text-[#101800]
-                  shadow-[0_10px_30px_rgba(173,209,50,0.20)]
-                "
-              >
-                <span>
-                  Request a free audit
-                </span>
-
-                <span
-                  className="
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-[#071006]
-                    text-white
-                  "
-                >
-                  <ArrowUpRight size={17} />
-                </span>
-              </Link>
-            </div>
+            <p className="mt-4 text-center text-[10px] font-medium tracking-wide text-[#858B7D]">
+              Protecting your digital content and intellectual property
+            </p>
           </div>
         </div>
       </header>
 
-      {/* =====================================================
-          FLOATING CONTROLS
-      ===================================================== */}
-
-      <div
-        className="
-          fixed
-          bottom-5
-          right-5
-          z-[1100]
-          flex
-          flex-col
-          items-center
-          gap-4
-          sm:bottom-6
-          sm:right-6
-        "
+      {/* WHATSAPP FLOATING BUTTON */}
+      <a
+        href={whatsappLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with TrackOwls on WhatsApp"
+        className="group fixed bottom-5 right-4 z-[1050] flex h-[49px] items-center gap-2 rounded-full border border-[#E2E9D9] bg-white py-1 pl-1 pr-3 text-[#455C29] shadow-[0_5px_20px_rgba(50,70,25,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#8BB630] sm:bottom-6 sm:right-6 sm:h-[54px] sm:gap-3 sm:pr-4"
       >
-        {/* ===================================================
-            SCROLL TO TOP
-        =================================================== */}
+        <span className="relative flex h-[39px] w-[39px] shrink-0 items-center justify-center rounded-full bg-[#8BB630] text-white sm:h-[44px] sm:w-[44px]">
+          <MessageCircle size={22} />
+          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-[#25D366]" />
+        </span>
 
-        <div
-          className={`
-            relative
-            h-[52px]
-            w-[52px]
-            transition-all
-            duration-300
+        <span className="flex flex-col leading-tight">
+          <span className="text-xs font-bold text-[#455C29]">
+            Let&apos;s talk
+          </span>
+          <span className="mt-1 text-[10px] text-[#777D70]">
+            Chat on WhatsApp
+          </span>
+        </span>
 
-            ${
-              showScrollTop
-                ? "visible translate-y-0 opacity-100"
-                : "invisible translate-y-3 opacity-0"
-            }
-          `}
-        >
-          {/* Outer ring */}
+        <ArrowUpRight
+          size={16}
+          className="text-[#63851E] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+        />
+      </a>
 
-          <span
-            className="
-              pointer-events-none
-              absolute
-              -inset-[5px]
-              rounded-full
-              border
-              border-[#ADD132]/20
-            "
-          />
+      {/* SCROLL TO TOP */}
+      <button
+        type="button"
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          closeMenu();
+        }}
+        aria-label="Scroll to top"
+        tabIndex={showScrollTop ? 0 : -1}
+        className={[
+          "fixed bottom-[80px] right-4 z-[1050] flex h-10 w-10 items-center justify-center",
+          "rounded-full border border-[#E1E8D7] bg-white text-[#526D29] shadow-md",
+          "transition-all duration-300 hover:border-[#8BB630] hover:bg-[#F0F5E7]",
+          "sm:bottom-[91px] sm:right-6",
+          showScrollTop
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-3 opacity-0",
+        ].join(" ")}
+      >
+        <ArrowUp size={18} />
+      </button>
 
-          {/* Inner ring */}
+      {/* LOGO AND ACCESSIBILITY STYLES */}
+      <style>{`
+        .trackowls-logo-holder,
+        .trackowls-logo-holder > a,
+        .trackowls-logo-holder > div {
+          width: 100%;
+          height: 100%;
+          min-width: 0;
+        }
 
-          <span
-            className="
-              pointer-events-none
-              absolute
-              -inset-[1px]
-              rounded-full
-              border
-              border-[#ADD132]/35
-            "
-          />
+        .trackowls-logo-holder img,
+        .trackowls-logo-holder video {
+          display: block;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          object-fit: contain;
+          object-position: left center;
+        }
 
-          {/* Button */}
-
-          <button
-            type="button"
-            onClick={handleScrollToTop}
-            aria-label="Scroll to top"
-            title="Scroll to top"
-            className="
-              group
-              relative
-              z-10
-              flex
-              h-[52px]
-              w-[52px]
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-[#ADD132]/40
-              bg-white
-              text-[#648A00]
-              shadow-[0_8px_25px_rgba(60,90,10,0.16)]
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:border-[#ADD132]
-              hover:bg-[#ADD132]
-              hover:text-[#101800]
-              hover:shadow-[0_10px_30px_rgba(173,209,50,0.30)]
-              focus:outline-none
-              focus:ring-2
-              focus:ring-[#ADD132]/40
-              dark:border-[#ADD132]/35
-              dark:bg-[#0B100D]
-              dark:text-[#ADD132]
-              dark:shadow-[0_8px_25px_rgba(0,0,0,0.35)]
-              dark:hover:bg-[#ADD132]
-              dark:hover:text-[#101800]
-            "
-          >
-            <ArrowUp
-              size={22}
-              strokeWidth={2.5}
-              className="
-                transition-transform
-                duration-300
-                group-hover:-translate-y-0.5
-              "
-            />
-          </button>
-        </div>
-
-        {/* ===================================================
-            WHATSAPP
-        =================================================== */}
-
-        <div className="relative">
-          {/* WhatsApp popup */}
-
-          {whatsappOpen && (
-            <div
-              className="
-                absolute
-                bottom-[72px]
-                right-0
-                w-[300px]
-                overflow-hidden
-                rounded-[20px]
-                border
-                border-black/10
-                bg-white/96
-                p-4
-                shadow-[0_20px_60px_rgba(20,40,25,0.18)]
-                backdrop-blur-2xl
-                dark:border-[#ADD132]/20
-                dark:bg-[#07100B]/96
-                dark:shadow-[0_20px_60px_rgba(0,0,0,0.50)]
-              "
-            >
-              {/* Close */}
-
-              <button
-                type="button"
-                onClick={() =>
-                  setWhatsappOpen(false)
-                }
-                aria-label="Close WhatsApp"
-                className="
-                  absolute
-                  right-3
-                  top-3
-                  flex
-                  h-6
-                  w-6
-                  items-center
-                  justify-center
-                  rounded-full
-                  text-[#6B776F]
-                  transition-colors
-                  hover:bg-black/5
-                  hover:text-black
-                  dark:text-white/40
-                  dark:hover:bg-white/10
-                  dark:hover:text-white
-                "
-              >
-                <X size={14} />
-              </button>
-
-              <div className="flex gap-3">
-                {/* Icon */}
-
-                <div
-                  className="
-                    flex
-                    h-[44px]
-                    w-[44px]
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-[13px]
-                    bg-gradient-to-br
-                    from-[#35E879]
-                    to-[#18B957]
-                    text-white
-                    shadow-[0_8px_20px_rgba(37,211,102,0.25)]
-                  "
-                >
-                  <MessageCircle size={22} />
-                </div>
-
-                {/* Content */}
-
-                <div className="pr-4">
-                  <h4
-                    className="
-                      text-[13px]
-                      font-extrabold
-                      text-[#172119]
-                      dark:text-white
-                    "
-                  >
-                    TrackOwls Support
-                  </h4>
-
-                  <p
-                    className="
-                      mt-1
-                      text-[11px]
-                      leading-relaxed
-                      text-[#68746C]
-                      dark:text-white/50
-                    "
-                  >
-                    Need help with digital
-                    protection?
-                  </p>
-
-                  <a
-                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20TrackOwls,%20I%20would%20like%20to%20know%20more.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="
-                      mt-2
-                      inline-flex
-                      items-center
-                      gap-1
-                      text-[11px]
-                      font-extrabold
-                      text-[#648A00]
-                      transition-colors
-                      hover:text-[#3F5D00]
-                      dark:text-[#ADD132]
-                      dark:hover:text-[#DFFF72]
-                    "
-                  >
-                    Start a conversation
-
-                    <ArrowUpRight size={13} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* WhatsApp button */}
-
-          <button
-            type="button"
-            onClick={() =>
-              setWhatsappOpen((prev) => !prev)
-            }
-            aria-label="WhatsApp"
-            className="
-              group
-              relative
-              flex
-              h-[56px]
-              w-[56px]
-              items-center
-              justify-center
-              rounded-full
-              bg-gradient-to-br
-              from-[#35E879]
-              to-[#18B957]
-              text-white
-              shadow-[0_10px_32px_rgba(37,211,102,0.30)]
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:scale-105
-            "
-          >
-            {/* Pulse */}
-
-            <span
-              className="
-                absolute
-                -inset-1
-                animate-ping
-                rounded-full
-                border
-                border-[#25D366]/30
-              "
-            />
-
-            <MessageCircle
-              size={27}
-              strokeWidth={2.1}
-            />
-
-            {/* Online dot */}
-
-            <span
-              className="
-                absolute
-                right-1
-                top-1
-                h-3
-                w-3
-                rounded-full
-                border-2
-                border-white
-                bg-[#C7EB45]
-              "
-            />
-          </button>
-        </div>
-      </div>
+        @media (prefers-reduced-motion: reduce) {
+          header *,
+          header a,
+          header button {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
     </>
   );
 }

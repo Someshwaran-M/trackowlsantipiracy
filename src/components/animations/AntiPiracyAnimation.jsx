@@ -1,3159 +1,1467 @@
-import React, { useEffect, useState } from "react";
 
+import React, { useEffect, useState } from "react";
 import {
   Activity,
   CheckCircle2,
   Globe2,
   Radar,
   ScanSearch,
-  Search,
   ShieldCheck,
   ShieldAlert,
   Target,
   Zap,
+  LockKeyhole,
+  ArrowRight,
 } from "lucide-react";
 
-/* =========================================================
-   SCENES
-========================================================= */
-
 const scenes = [
+  { id: "radar", label: "Threat Radar", number: "01" },
+  { id: "discovery", label: "Content Discovery", number: "02" },
+  { id: "protection", label: "Rights Protection", number: "03" },
+  { id: "takedown", label: "Protection Flow", number: "04" },
+];
+
+const sources = [
   {
-    id: "radar",
-    label: "Threat Radar",
-    number: "01",
+    label: "Video platforms",
+    detail: "Content monitoring",
+    icon: ScanSearch,
   },
   {
-    id: "discovery",
-    label: "Content Discovery",
-    number: "02",
+    label: "Web & social",
+    detail: "Digital intelligence",
+    icon: Globe2,
   },
   {
-    id: "protection",
-    label: "Rights Protection",
-    number: "03",
+    label: "Brand assets",
+    detail: "Rights verification",
+    icon: ShieldCheck,
   },
   {
-    id: "takedown",
-    label: "Protection Flow",
-    number: "04",
+    label: "Live streams",
+    detail: "Threat detection",
+    icon: Activity,
   },
 ];
 
-/* =========================================================
-   MAIN COMPONENT
-========================================================= */
+function ThreatRadar() {
+  const threats = [
+    { x: "70%", y: "22%", delay: "0s" },
+    { x: "27%", y: "30%", delay: ".5s" },
+    { x: "38%", y: "73%", delay: "1s" },
+    { x: "78%", y: "69%", delay: "1.4s" },
+    { x: "54%", y: "18%", delay: ".8s" },
+    { x: "19%", y: "58%", delay: "1.7s" },
+  ];
+
+  return (
+    <div className="to-visual to-radar">
+      <div className="to-radar-orbit">
+        <span className="to-radar-ring ring-a" />
+        <span className="to-radar-ring ring-b" />
+        <span className="to-radar-ring ring-c" />
+        <span className="to-radar-cross horizontal" />
+        <span className="to-radar-cross vertical" />
+        <span className="to-radar-sweep" />
+
+        {threats.map((point, index) => (
+          <span
+            key={index}
+            className={`to-threat-dot ${
+              index % 2 ? "warning" : ""
+            }`}
+            style={{
+              left: point.x,
+              top: point.y,
+              animationDelay: point.delay,
+            }}
+          />
+        ))}
+
+        <span className="to-radar-center">
+          <Radar size={25} />
+        </span>
+      </div>
+
+      <div className="to-float-label radar-label-one">
+        <span className="to-status-dot danger" />
+        Unauthorized copy
+      </div>
+
+      <div className="to-float-label radar-label-two">
+        <span className="to-status-dot" />
+        Scan active
+      </div>
+
+      <div className="to-radar-caption">
+        <span className="to-caption-line" />
+        DIGITAL THREAT INTELLIGENCE
+      </div>
+    </div>
+  );
+}
+
+function ContentDiscovery() {
+  return (
+    <div className="to-visual to-discovery">
+      <svg
+        className="to-connection-lines"
+        viewBox="0 0 500 300"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <line x1="250" y1="150" x2="100" y2="65" />
+        <line x1="250" y1="150" x2="400" y2="65" />
+        <line x1="250" y1="150" x2="100" y2="240" />
+        <line x1="250" y1="150" x2="400" y2="240" />
+        <circle cx="100" cy="65" r="4" />
+        <circle cx="400" cy="65" r="4" />
+        <circle cx="100" cy="240" r="4" />
+        <circle cx="400" cy="240" r="4" />
+      </svg>
+
+      <div className="to-discovery-core">
+        <ScanSearch size={32} strokeWidth={1.6} />
+        <span>SCAN</span>
+      </div>
+
+      {sources.map((source, index) => {
+        const Icon = source.icon;
+
+        return (
+          <div
+            key={source.label}
+            className={`to-source source-${index + 1}`}
+          >
+            <span className="to-source-icon">
+              <Icon size={19} strokeWidth={1.7} />
+            </span>
+
+            <span className="to-source-copy">
+              <strong>{source.label}</strong>
+              <small>{source.detail}</small>
+            </span>
+
+            <span className="to-source-pulse" />
+          </div>
+        );
+      })}
+
+      <div className="to-discovery-footer">
+        <span className="to-status-dot" />
+        Scanning digital channels
+      </div>
+    </div>
+  );
+}
+
+function RightsProtection() {
+  return (
+    <div className="to-visual to-protection">
+      <div className="to-protection-orbit orbit-one" />
+      <div className="to-protection-orbit orbit-two" />
+      <div className="to-protection-orbit orbit-three" />
+
+      <div className="to-protection-glow" />
+
+      <div className="to-protection-shield">
+        <ShieldCheck size={65} strokeWidth={1.4} />
+        <span className="to-shield-check">
+          <CheckCircle2 size={20} />
+        </span>
+      </div>
+
+      <div className="to-protection-label protection-one">
+        <span className="to-status-dot" />
+        Rights verified
+      </div>
+
+      <div className="to-protection-label protection-two">
+        <span className="to-status-dot" />
+        Content protected
+      </div>
+
+      <div className="to-protection-label protection-three">
+        <LockKeyhole size={14} />
+        IP SECURITY
+      </div>
+
+      <div className="to-protection-footer">
+        <span>RIGHTS INTELLIGENCE</span>
+        <strong>Protection in focus.</strong>
+      </div>
+    </div>
+  );
+}
+
+function ProtectionFlow() {
+  const steps = [
+    {
+      title: "DETECT",
+      subtitle: "Identify threats",
+      icon: ScanSearch,
+      type: "warning",
+      status: "IDENTIFIED",
+    },
+    {
+      title: "VERIFY",
+      subtitle: "Validate rights",
+      icon: ShieldAlert,
+      type: "neutral",
+      status: "VERIFIED",
+    },
+    {
+      title: "PROTECT",
+      subtitle: "Enforce action",
+      icon: CheckCircle2,
+      type: "success",
+      status: "PROTECTION",
+    },
+  ];
+
+  return (
+    <div className="to-visual to-flow">
+      <div className="to-flow-track">
+        <span className="to-flow-track-progress" />
+        <span className="to-flow-signal signal-one" />
+        <span className="to-flow-signal signal-two" />
+        <span className="to-flow-signal signal-three" />
+      </div>
+
+      <div className="to-flow-nodes">
+        {steps.map((step, index) => {
+          const Icon = step.icon;
+
+          return (
+            <React.Fragment key={step.title}>
+              <div className={`to-flow-node ${step.type}`}>
+                <div className="to-flow-icon">
+                  <Icon size={24} strokeWidth={1.8} />
+                </div>
+
+                <strong>{step.title}</strong>
+                <span>{step.subtitle}</span>
+                <small>{step.status}</small>
+              </div>
+
+              {index < steps.length - 1 && (
+                <ArrowRight
+                  className="to-flow-arrow"
+                  size={18}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      <div className="to-flow-footer">
+        <span className="to-status-dot" />
+        Intelligence-led enforcement workflow
+      </div>
+    </div>
+  );
+}
 
 function AntiPiracyAnimation() {
   const [activeScene, setActiveScene] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = window.setInterval(() => {
       setActiveScene((current) => (current + 1) % scenes.length);
     }, 4200);
 
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, []);
 
   const currentScene = scenes[activeScene];
 
   return (
     <div className="track-intelligence-animation">
+      <div className="to-panel-glow glow-one" />
+      <div className="to-panel-glow glow-two" />
+      <div className="to-panel-grid" />
 
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
-        <div className="track-ai-background" />
-
-      <div className="track-ai-glow track-ai-glow-one" />
-      <div className="track-ai-glow track-ai-glow-two" />
-
-      <div className="track-ai-grid" />
-
-      {/* =====================================================
-          MAIN VISUAL
-      ===================================================== */}
-
-      <div className="track-ai-visual">
-
-        {/* Decorative outer rings */}
-
-        <div className="track-ai-outer-ring ring-one" />
-        <div className="track-ai-outer-ring ring-two" />
-        <div className="track-ai-outer-ring ring-three" />
-
-        {/* Top technical label */}
-
-        <div className="track-ai-top-label">
-          <span className="track-ai-status-dot" />
-
-          <span>
-            TRACKOWLS INTELLIGENCE
-          </span>
-
-          <span className="track-ai-live">
-            LIVE
-          </span>
+      <div className="to-panel-header">
+        <div className="to-brand-mark">
+          <Radar size={20} strokeWidth={1.8} />
         </div>
 
-        {/* Scene title */}
-
-        <div className="track-ai-scene-title">
-          <span>{currentScene.number}</span>
-          {currentScene.label}
+        <div className="to-panel-heading">
+          <strong>TRACKOWLS</strong>
+          <span>ANTI-PIRACY INTELLIGENCE</span>
         </div>
 
-        {/* =================================================
-            SCENE CONTENT
-        ================================================= */}
-
-        <div
-          className="track-ai-scene"
-          key={currentScene.id}
-        >
-          {activeScene === 0 && <ThreatRadar />}
-
-          {activeScene === 1 && <ContentDiscovery />}
-
-          {activeScene === 2 && <RightsProtection />}
-
-          {activeScene === 3 && <ProtectionFlow />}
+        <div className="to-live-badge">
+          <span className="to-status-dot" />
+          LIVE
         </div>
-
-        {/* =================================================
-            BOTTOM INTELLIGENCE LINE
-        ================================================= */}
-
-        <div className="track-ai-bottom">
-
-          <div>
-            <span>MONITORING</span>
-            <strong>24/7</strong>
-          </div>
-
-          <div className="track-ai-bottom-line" />
-
-          <div>
-            <span>DETECTION</span>
-            <strong>LIVE</strong>
-          </div>
-
-          <div className="track-ai-bottom-line" />
-
-          <div>
-            <span>PROTECTION</span>
-            <strong>ACTIVE</strong>
-          </div>
-
-        </div>
-
-        {/* =================================================
-            PROGRESS
-        ================================================= */}
-
-        <div className="track-ai-progress">
-          {scenes.map((scene, index) => (
-            <span
-              key={scene.id}
-              className={index === activeScene ? "active" : ""}
-            />
-          ))}
-        </div>
-
       </div>
 
-      {/* =====================================================
-          STYLES
-      ===================================================== */}
+      <div className="to-panel-divider" />
+
+      <div className="to-scene-heading">
+        <div>
+          <span className="to-scene-eyebrow">
+            PROTECTION SYSTEM / {currentScene.number}
+          </span>
+
+          <h3>{currentScene.label}</h3>
+        </div>
+
+        <span className="to-scene-number">
+          {currentScene.number}
+          <span>/ 04</span>
+        </span>
+      </div>
+
+      <div className="to-scene-viewport" key={currentScene.id}>
+        {activeScene === 0 && <ThreatRadar />}
+        {activeScene === 1 && <ContentDiscovery />}
+        {activeScene === 2 && <RightsProtection />}
+        {activeScene === 3 && <ProtectionFlow />}
+      </div>
+
+      <div className="to-panel-divider" />
+
+      <div className="to-panel-footer">
+        <div className="to-footer-metric">
+          <span className="to-footer-icon">
+            <Activity size={16} />
+          </span>
+          <div>
+            <small>MONITORING</small>
+            <strong>Continuous</strong>
+          </div>
+        </div>
+
+        <div className="to-footer-metric">
+          <span className="to-footer-icon">
+            <Target size={16} />
+          </span>
+          <div>
+            <small>INTELLIGENCE</small>
+            <strong>Evidence-led</strong>
+          </div>
+        </div>
+
+        <div className="to-footer-metric">
+          <span className="to-footer-icon">
+            <Zap size={16} />
+          </span>
+          <div>
+            <small>PROTECTION</small>
+            <strong>Rights-focused</strong>
+          </div>
+        </div>
+      </div>
+
+      <div className="to-panel-progress">
+        {scenes.map((scene, index) => (
+          <button
+            key={scene.id}
+            type="button"
+            aria-label={`Show ${scene.label}`}
+            aria-pressed={activeScene === index}
+            className={activeScene === index ? "active" : ""}
+            onClick={() => setActiveScene(index)}
+          />
+        ))}
+      </div>
 
       <style>{`
-
-        /* =====================================================
-           VARIABLES
-        ===================================================== */
-
-        :root {
-          --ai-green: #6d900b;
-          --ai-green-bright: #8eaf1e;
-          --ai-green-light: #add132;
-
-          --ai-heading: #162018;
-          --ai-text: #35463b;
-          --ai-muted: #66766c;
-
-          --ai-line: rgba(70, 100, 78, 0.22);
-          --ai-line-light: rgba(70, 100, 78, 0.12);
-
-          --ai-glow: rgba(142, 175, 30, 0.22);
-
-          --ai-background: #f7faf4;
-        }
-
-        /* =====================================================
-           MAIN WRAPPER
-        ===================================================== */
-
-/* =====================================================
-   NORMAL LIGHT / DARK BACKGROUND
-===================================================== */
-
-.track-ai-background {
-  position: absolute;
-
-  inset: -20px;
-
-  z-index: -10;
-
-  border-radius: 32px;
-
-  background: #f7f9f5;
-
-  border: 1px solid rgba(70, 100, 78, 0.08);
-
-  pointer-events: none;
-}
-
-
-/* DARK MODE */
-
-html.dark .track-ai-background {
-  background: #07100c;
-
-  border-color: rgba(173, 209, 50, 0.08);
-}
-
         .track-intelligence-animation {
+          --to-lime: #a8d900;
+          --to-lime-dark: #668900;
+          --to-lime-soft: #789e08;
+          --to-navy: #14283b;
+          --to-panel: #ffffff;
+          --to-muted: #64748b;
+          --to-line: #e1e8ee;
+
           position: relative;
-
-          width: 100%;
-          max-width: 580px;
-
-          min-height: 510px;
-
-          margin: 0 auto;
-
           isolation: isolate;
+          width: 100%;
+          max-width: 610px;
+          min-width: 0;
+          margin: 0 auto;
+          overflow: hidden;
+          border: 1px solid #dce5ec;
+          border-radius: 18px;
+          background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+          color: var(--to-navy);
+          font-family: "Roboto", sans-serif;
+          box-shadow: 0 22px 60px rgba(25, 45, 65, 0.12);
         }
 
-        /* =====================================================
-           BACKGROUND GLOW
-        ===================================================== */
+        .track-intelligence-animation *,
+        .track-intelligence-animation *::before,
+        .track-intelligence-animation *::after {
+          box-sizing: border-box;
+        }
 
-        .track-ai-glow {
+        .to-panel-glow {
           position: absolute;
-
-          border-radius: 999px;
-
-          pointer-events: none;
-
-          filter: blur(65px);
-
-          z-index: -3;
-        }
-
-        .track-ai-glow-one {
-          width: 250px;
-          height: 250px;
-
-          top: 5%;
-          right: 5%;
-
-          background:
-            rgba(173, 209, 50, 0.13);
-
-          animation:
-            aiGlowOne 6s ease-in-out infinite;
-        }
-
-        .track-ai-glow-two {
+          z-index: -2;
           width: 220px;
           height: 220px;
+          border-radius: 50%;
+          filter: blur(70px);
+          pointer-events: none;
+        }
 
+        .to-panel-glow.glow-one {
+          top: 5%;
+          right: -80px;
+          background: rgba(168, 217, 0, 0.15);
+          animation: to-glow 7s ease-in-out infinite alternate;
+        }
+
+        .to-panel-glow.glow-two {
           bottom: 5%;
-          left: 0;
-
-          background:
-            rgba(36, 173, 126, 0.08);
-
-          animation:
-            aiGlowTwo 7s ease-in-out infinite;
+          left: -90px;
+          background: rgba(38, 160, 140, 0.09);
         }
 
-        /* =====================================================
-           GRID
-        ===================================================== */
-
-        .track-ai-grid {
+        .to-panel-grid {
           position: absolute;
-
-          inset: 5% 0;
-
-          z-index: -2;
-
-          opacity: 0.45;
-
-          background-image:
-            linear-gradient(
-              rgba(109, 144, 11, 0.045) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(109, 144, 11, 0.045) 1px,
-              transparent 1px
-            );
-
-          background-size: 42px 42px;
-
-          mask-image:
-            radial-gradient(
-              ellipse at center,
-              black 10%,
-              transparent 72%
-            );
-        }
-
-        /* =====================================================
-           MAIN VISUAL
-        ===================================================== */
-
-        .track-ai-visual {
-          position: relative;
-
-          width: 100%;
-          min-height: 475px;
-
-          overflow: hidden;
-
-          border-radius: 32px;
-
-          background:
-            radial-gradient(
-              circle at 50% 45%,
-              rgba(173, 209, 50, 0.075),
-              transparent 34%
-            );
-
-          border:
-            1px solid rgba(84, 113, 79, 0.13);
-
-          box-shadow:
-            0 35px 90px rgba(58, 83, 52, 0.08);
-
-          isolation: isolate;
-        }
-
-        /*
-          Very subtle top illumination.
-        */
-
-        .track-ai-visual::before {
-          content: "";
-
-          position: absolute;
-
-          width: 65%;
-          height: 1px;
-
-          top: 22px;
-          left: 17.5%;
-
-          background:
-            linear-gradient(
-              90deg,
-              transparent,
-              rgba(109, 144, 11, 0.45),
-              transparent
-            );
-
-          box-shadow:
-            0 0 18px rgba(109, 144, 11, 0.18);
-        }
-
-        /*
-          Bottom illumination.
-        */
-
-        .track-ai-visual::after {
-          content: "";
-
-          position: absolute;
-
-          width: 60%;
-          height: 100px;
-
-          bottom: -75px;
-          left: 20%;
-
-          border-radius: 50%;
-
-          background:
-            rgba(173, 209, 50, 0.08);
-
-          filter: blur(35px);
-
-          pointer-events: none;
-        }
-
-        /* =====================================================
-           OUTER ORBITAL RINGS
-        ===================================================== */
-
-        .track-ai-outer-ring {
-          position: absolute;
-
-          left: 50%;
-          top: 51%;
-
-          border-radius: 50%;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.09);
-
-          pointer-events: none;
-
-          z-index: -1;
-        }
-
-        .track-ai-outer-ring.ring-one {
-          width: 350px;
-          height: 350px;
-
-          transform:
-            translate(-50%, -50%);
-
-          animation:
-            outerRotate 18s linear infinite;
-        }
-
-        .track-ai-outer-ring.ring-two {
-          width: 430px;
-          height: 220px;
-
-          transform:
-            translate(-50%, -50%)
-            rotate(18deg);
-
-          border-color:
-            rgba(109, 144, 11, 0.07);
-
-          animation:
-            outerRotateReverse 22s linear infinite;
-        }
-
-        .track-ai-outer-ring.ring-three {
-          width: 475px;
-          height: 170px;
-
-          transform:
-            translate(-50%, -50%)
-            rotate(-24deg);
-
-          border-color:
-            rgba(36, 173, 126, 0.06);
-
-          animation:
-            outerRotate 28s linear infinite;
-        }
-
-        /* =====================================================
-           TOP LABEL
-        ===================================================== */
-
-        .track-ai-top-label {
-          position: absolute;
-
-          top: 32px;
-          left: 50%;
-
-          transform:
-            translateX(-50%);
-
-          display: flex;
-          align-items: center;
-
-          gap: 8px;
-
-          white-space: nowrap;
-
-          color:
-            var(--ai-muted);
-
-          font-size: 8px;
-          font-weight: 900;
-
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-        }
-
-        .track-ai-status-dot {
-          width: 5px;
-          height: 5px;
-
-          border-radius: 50%;
-
-          background:
-            #20a978;
-
-          box-shadow:
-            0 0 9px rgba(32, 169, 120, 0.55);
-
-          animation:
-            statusPulse 1.8s ease-in-out infinite;
-        }
-
-        .track-ai-live {
-          color:
-            var(--ai-green);
-
-          font-size: 7px;
-
-          letter-spacing: 0.13em;
-        }
-
-        /* =====================================================
-           SCENE TITLE
-        ===================================================== */
-
-        .track-ai-scene-title {
-          position: absolute;
-
-          top: 62px;
-          left: 50%;
-
-          transform:
-            translateX(-50%);
-
-          display: flex;
-          align-items: center;
-
-          gap: 8px;
-
-          white-space: nowrap;
-
-          color:
-            var(--ai-heading);
-
-          font-size: 10px;
-          font-weight: 800;
-
-          letter-spacing: 0.08em;
-
-          text-transform: uppercase;
-        }
-
-        .track-ai-scene-title span {
-          color:
-            var(--ai-green);
-
-          font-size: 8px;
-
-          letter-spacing: 0.12em;
-        }
-
-        /* =====================================================
-           SCENE
-        ===================================================== */
-
-        .track-ai-scene {
-          position: absolute;
-
           inset: 0;
-
-          padding:
-            90px 25px 70px;
-
-          animation:
-            sceneAppear 650ms
-            cubic-bezier(
-              0.16,
-              1,
-              0.3,
-              1
-            );
+          z-index: -1;
+          opacity: 0.42;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(104, 137, 0, 0.055) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(104, 137, 0, 0.055) 1px, transparent 1px);
+          background-size: 32px 32px;
+          mask-image: linear-gradient(to bottom, black, transparent 95%);
         }
 
-        /* =====================================================
-           SCENE 01
-           THREAT RADAR
-        ===================================================== */
-
-        .ai-radar-scene {
-          position: relative;
-
-          width: 100%;
-          height: 100%;
-
+        .to-panel-header {
           display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 17px 20px;
+        }
+
+        .to-brand-mark {
+          display: flex;
+          width: 39px;
+          height: 39px;
+          flex-shrink: 0;
           align-items: center;
           justify-content: center;
+          border: 1px solid #d5e9a0;
+          border-radius: 10px;
+          color: #557700;
+          background: #f1f8dc;
         }
 
-        .ai-radar-core {
-          position: relative;
-
-          width: 240px;
-          height: 240px;
-
-          border-radius: 50%;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.2);
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(173, 209, 50, 0.08),
-              transparent 65%
-            );
-
-          box-shadow:
-            0 0 70px rgba(109, 144, 11, 0.05);
-        }
-
-        /*
-          Radar circles.
-        */
-
-        .ai-radar-circle {
-          position: absolute;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.13);
-
-          border-radius: 50%;
-
-          left: 50%;
-          top: 50%;
-
-          transform:
-            translate(-50%, -50%);
-        }
-
-        .ai-radar-circle.one {
-          width: 68%;
-          height: 68%;
-        }
-
-        .ai-radar-circle.two {
-          width: 42%;
-          height: 42%;
-        }
-
-        .ai-radar-circle.three {
-          width: 17%;
-          height: 17%;
-
-          border-color:
-            rgba(109, 144, 11, 0.2);
-        }
-
-        /*
-          Cross lines.
-        */
-
-        .ai-radar-horizontal {
-          position: absolute;
-
-          top: 50%;
-          left: 0;
-          right: 0;
-
-          height: 1px;
-
-          background:
-            rgba(109, 144, 11, 0.11);
-        }
-
-        .ai-radar-vertical {
-          position: absolute;
-
-          left: 50%;
-          top: 0;
-          bottom: 0;
-
-          width: 1px;
-
-          background:
-            rgba(109, 144, 11, 0.11);
-        }
-
-        /*
-          Sweep.
-        */
-
-        .ai-radar-sweep {
-          position: absolute;
-
-          inset: 0;
-
-          overflow: hidden;
-
-          border-radius: 50%;
-        }
-
-        .ai-radar-sweep::before {
-          content: "";
-
-          position: absolute;
-
-          width: 50%;
-          height: 50%;
-
-          left: 50%;
-          top: 0;
-
-          transform-origin:
-            bottom left;
-
-          background:
-            conic-gradient(
-              from 0deg,
-              rgba(109, 144, 11, 0.24),
-              rgba(109, 144, 11, 0.04),
-              transparent
-            );
-
-          clip-path:
-            polygon(
-              0 0,
-              100% 0,
-              0 100%
-            );
-
-          animation:
-            radarRotate 3s linear infinite;
-        }
-
-        /*
-          Center.
-        */
-
-        .ai-radar-center {
-          position: absolute;
-
-          left: 50%;
-          top: 50%;
-
-          width: 17px;
-          height: 17px;
-
-          transform:
-            translate(-50%, -50%);
-
-          border:
-            2px solid var(--ai-green);
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-background);
-
-          box-shadow:
-            0 0 20px rgba(109, 144, 11, 0.4);
-
-          z-index: 5;
-        }
-
-        .ai-radar-center::after {
-          content: "";
-
-          position: absolute;
-
-          inset: 4px;
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          animation:
-            corePulse 1.6s ease-in-out infinite;
-        }
-
-        /*
-          Threat points.
-        */
-
-        .ai-threat {
-          position: absolute;
-
-          width: 7px;
-          height: 7px;
-
-          border-radius: 50%;
-
-          background:
-            #d78a29;
-
-          box-shadow:
-            0 0 15px rgba(215, 138, 41, 0.55);
-
-          animation:
-            threatPulse 1.7s ease-in-out infinite;
-        }
-
-        .ai-threat.one {
-          top: 22%;
-          right: 25%;
-        }
-
-        .ai-threat.two {
-          bottom: 25%;
-          left: 21%;
-
-          animation-delay: 0.4s;
-        }
-
-        .ai-threat.three {
-          top: 31%;
-          left: 18%;
-
-          animation-delay: 0.8s;
-        }
-
-        .ai-threat.four {
-          right: 19%;
-          bottom: 19%;
-
-          animation-delay: 1.1s;
-        }
-
-        /*
-          Radar labels.
-        */
-
-        .ai-radar-label {
-          position: absolute;
-
+        .to-panel-heading {
           display: flex;
-          align-items: center;
-
-          gap: 6px;
-
-          color:
-            var(--ai-text);
-
-          font-size: 7px;
-          font-weight: 800;
-
-          letter-spacing: 0.1em;
-
-          text-transform: uppercase;
-
-          white-space: nowrap;
+          min-width: 0;
+          flex: 1;
+          flex-direction: column;
+          gap: 4px;
         }
 
-        .ai-radar-label::before {
-          content: "";
-
-          width: 4px;
-          height: 4px;
-
-          border-radius: 50%;
-
-          background:
-            #d78a29;
-        }
-
-        .ai-radar-label.one {
-          top: 18%;
-          right: 1%;
-        }
-
-        .ai-radar-label.two {
-          bottom: 18%;
-          left: 1%;
-        }
-
-        /*
-          Radar metric.
-        */
-
-        .ai-radar-metric {
-          position: absolute;
-
-          right: 8%;
-          top: 50%;
-
-          transform:
-            translateY(-50%);
-
-          text-align: left;
-        }
-
-        .ai-radar-metric strong {
-          display: block;
-
-          color:
-            var(--ai-heading);
-
-          font-size: 26px;
-
-          line-height: 1;
-
-          font-weight: 800;
-        }
-
-        .ai-radar-metric span {
-          display: block;
-
-          margin-top: 5px;
-
-          color:
-            var(--ai-muted);
-
-          font-size: 6px;
-
+        .to-panel-heading strong {
+          color: #14283b;
+          font-size: 13px;
           font-weight: 900;
-
           letter-spacing: 0.14em;
         }
 
-        /* =====================================================
-           SCENE 02
-           CONTENT DISCOVERY
-        ===================================================== */
-
-        .ai-discovery-scene {
-          position: relative;
-
-          width: 100%;
-          height: 100%;
-        }
-
-        /*
-          Connection system.
-        */
-
-        .ai-discovery-lines {
-          position: absolute;
-
-          inset: 0;
-
-          width: 100%;
-          height: 100%;
-
-          overflow: visible;
-
-          pointer-events: none;
-        }
-
-        .ai-discovery-lines line {
-          stroke:
-            rgba(109, 144, 11, 0.22);
-
-          stroke-width:
-            0.2;
-
-          vector-effect:
-            non-scaling-stroke;
-
-          stroke-dasharray:
-            3 4;
-
-          animation:
-            lineDash 5s linear infinite;
-        }
-
-        /*
-          Center intelligence core.
-        */
-
-        .ai-discovery-core {
-          position: absolute;
-
-          left: 50%;
-          top: 50%;
-
-          width: 92px;
-          height: 92px;
-
-          transform:
-            translate(-50%, -50%);
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          color:
-            var(--ai-green);
-
-          border:
-            1px solid rgba(109, 144, 11, 0.25);
-
-          border-radius: 50%;
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(173, 209, 50, 0.15),
-              rgba(173, 209, 50, 0.035) 55%,
-              transparent 70%
-            );
-
-          box-shadow:
-            0 0 55px rgba(109, 144, 11, 0.08);
-
-          z-index: 10;
-
-          animation:
-            discoveryCore 2.5s ease-in-out infinite;
-        }
-
-        .ai-discovery-core::before {
-          content: "";
-
-          position: absolute;
-
-          inset: -12px;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.1);
-
-          border-radius: 50%;
-
-          animation:
-            discoveryRing 2.5s ease-out infinite;
-        }
-
-        .ai-discovery-core::after {
-          content: "";
-
-          position: absolute;
-
-          inset: 17px;
-
-          border:
-            1px dashed rgba(109, 144, 11, 0.17);
-
-          border-radius: 50%;
-
-          animation:
-            discoveryRotate 10s linear infinite;
-        }
-
-        .ai-discovery-core svg {
-          position: relative;
-
-          z-index: 5;
-        }
-
-        /*
-          Source labels.
-          NO CARDS.
-        */
-
-        .ai-source {
-          position: absolute;
-
-          display: flex;
-          align-items: center;
-
-          gap: 8px;
-
-          color:
-            var(--ai-text);
-
-          z-index: 5;
-
-          animation:
-            sourceFloat 3.2s ease-in-out infinite;
-        }
-
-        .ai-source-icon {
-          display: flex;
-
-          width: 29px;
-          height: 29px;
-
-          align-items: center;
-          justify-content: center;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.2);
-
-          border-radius: 50%;
-
-          color:
-            var(--ai-green);
-
-          background:
-            rgba(173, 209, 50, 0.07);
-        }
-
-        .ai-source-text strong {
-          display: block;
-
-          color:
-            var(--ai-heading);
-
+        .to-panel-heading span {
+          color: #64748b;
           font-size: 8px;
-
           font-weight: 800;
-
-          letter-spacing: 0.05em;
+          letter-spacing: 0.12em;
         }
 
-        .ai-source-text span {
-          display: block;
-
-          margin-top: 3px;
-
-          color:
-            var(--ai-muted);
-
-          font-size: 6px;
-
-          letter-spacing: 0.05em;
-        }
-
-        .ai-source.one {
-          top: 7%;
-          left: 3%;
-        }
-
-        .ai-source.two {
-          top: 7%;
-          right: 3%;
-
-          animation-delay: 0.5s;
-        }
-
-        .ai-source.three {
-          bottom: 8%;
-          left: 7%;
-
-          animation-delay: 1s;
-        }
-
-        .ai-source.four {
-          right: 6%;
-          bottom: 8%;
-
-          animation-delay: 1.5s;
-        }
-
-        /*
-          Small source signal.
-        */
-
-        .ai-source-signal {
-          position: absolute;
-
-          width: 4px;
-          height: 4px;
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 10px rgba(109, 144, 11, 0.4);
-
-          animation:
-            sourceSignal 2s ease-in-out infinite;
-        }
-
-        .ai-source.one .ai-source-signal {
-          right: -15px;
-          bottom: -4px;
-        }
-
-        .ai-source.two .ai-source-signal {
-          left: -15px;
-          bottom: -4px;
-        }
-
-        .ai-source.three .ai-source-signal {
-          right: -15px;
-          top: -4px;
-        }
-
-        .ai-source.four .ai-source-signal {
-          left: -15px;
-          top: -4px;
-        }
-
-        /* =====================================================
-           SCENE 03
-           RIGHTS PROTECTION
-        ===================================================== */
-
-        .ai-protection-scene {
-          position: relative;
-
-          width: 100%;
-          height: 100%;
-
+        .to-live-badge {
           display: flex;
           align-items: center;
-          justify-content: center;
-        }
-
-        /*
-          Rotating elliptical system.
-        */
-
-        .ai-protection-orbit {
-          position: absolute;
-
-          width: 310px;
-          height: 170px;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.12);
-
-          border-radius: 50%;
-
-          transform:
-            rotate(25deg);
-
-          animation:
-            protectionOrbit 12s linear infinite;
-        }
-
-        .ai-protection-orbit.two {
-          width: 260px;
-          height: 210px;
-
-          transform:
-            rotate(-35deg);
-
-          border-color:
-            rgba(36, 173, 126, 0.1);
-
-          animation-duration:
-            16s;
-
-          animation-direction:
-            reverse;
-        }
-
-        .ai-protection-orbit.three {
-          width: 190px;
-          height: 285px;
-
-          transform:
-            rotate(65deg);
-
-          border-color:
-            rgba(109, 144, 11, 0.08);
-
-          animation-duration:
-            20s;
-        }
-
-        /*
-          Shield.
-        */
-
-        .ai-shield {
-          position: relative;
-
-          width: 112px;
-          height: 132px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          color:
-            var(--ai-green);
-
-          clip-path:
-            polygon(
-              50% 0,
-              90% 15%,
-              86% 62%,
-              50% 100%,
-              14% 62%,
-              10% 15%
-            );
-
-          background:
-            linear-gradient(
-              145deg,
-              rgba(173, 209, 50, 0.2),
-              rgba(173, 209, 50, 0.035)
-            );
-
-          filter:
-            drop-shadow(
-              0 0 25px rgba(109, 144, 11, 0.12)
-            );
-
-          z-index: 5;
-
-          animation:
-            shieldFloat 3.2s ease-in-out infinite;
-        }
-
-        .ai-shield::before {
-          content: "";
-
-          position: absolute;
-
-          inset: 2px;
-
-          clip-path: inherit;
-
-          background:
-            var(--ai-background);
-        }
-
-        .ai-shield svg {
-          position: relative;
-
-          z-index: 2;
-        }
-
-        /*
-          Shield center glow.
-        */
-
-        .ai-shield-glow {
-          position: absolute;
-
-          width: 180px;
-          height: 180px;
-
-          border-radius: 50%;
-
-          background:
-            rgba(173, 209, 50, 0.08);
-
-          filter:
-            blur(30px);
-
-          animation:
-            shieldGlow 3s ease-in-out infinite;
-        }
-
-        /*
-          Protection labels.
-          No boxes.
-        */
-
-        .ai-protection-label {
-          position: absolute;
-
-          display: flex;
-          align-items: center;
-
           gap: 7px;
-
-          color:
-            var(--ai-text);
-
-          font-size: 7px;
-
-          font-weight: 800;
-
-          letter-spacing: 0.1em;
-
-          text-transform: uppercase;
+          flex-shrink: 0;
+          padding: 7px 10px;
+          border: 1px solid #d9e9b1;
+          border-radius: 6px;
+          color: #527300;
+          background: #f4f9e7;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.13em;
         }
 
-        .ai-protection-label::before {
-          content: "";
-
-          width: 5px;
-          height: 5px;
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 10px rgba(109, 144, 11, 0.4);
-        }
-
-        .ai-protection-label.one {
-          top: 15%;
-          left: 4%;
-        }
-
-        .ai-protection-label.two {
-          right: 4%;
-          bottom: 17%;
-        }
-
-        .ai-protection-label.three {
-          right: 11%;
-          top: 25%;
-        }
-
-        /*
-          Protection scanning dots.
-        */
-
-        .ai-protection-dot {
-          position: absolute;
-
-          width: 5px;
-          height: 5px;
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 12px rgba(109, 144, 11, 0.55);
-
-          animation:
-            protectionDot 2.4s ease-in-out infinite;
-        }
-
-        .ai-protection-dot.one {
-          top: 23%;
-          left: 25%;
-        }
-
-        .ai-protection-dot.two {
-          right: 24%;
-          bottom: 26%;
-
-          animation-delay: 0.7s;
-        }
-
-        .ai-protection-dot.three {
-          right: 20%;
-          top: 40%;
-
-          animation-delay: 1.2s;
-        }
-
-        /* =====================================================
-           SCENE 04
-           PROTECTION FLOW
-        ===================================================== */
-
-        .ai-flow-scene {
-          position: relative;
-
-          width: 100%;
-          height: 100%;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        /*
-          Main horizontal intelligence line.
-        */
-
-        .ai-flow-line {
-          position: absolute;
-
-          left: 12%;
-          right: 12%;
-
-          top: 50%;
-
-          height: 1px;
-
-          background:
-            linear-gradient(
-              90deg,
-              rgba(215, 138, 41, 0.35),
-              rgba(109, 144, 11, 0.45),
-              rgba(32, 169, 120, 0.5)
-            );
-        }
-
-        /*
-          Animated signal.
-        */
-
-        .ai-flow-signal {
-          position: absolute;
-
-          top: 50%;
-
-          left: 12%;
-
+        .to-status-dot {
+          display: inline-block;
           width: 7px;
           height: 7px;
-
-          transform:
-            translateY(-50%);
-
+          flex-shrink: 0;
           border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 16px rgba(109, 144, 11, 0.55);
-
-          animation:
-            flowSignal 2.7s linear infinite;
+          background: #85b900;
+          box-shadow: 0 0 8px rgba(133, 185, 0, 0.3);
+          animation: to-status-pulse 1.8s ease-in-out infinite;
         }
 
-        .ai-flow-signal.two {
-          animation-delay: 0.9s;
+        .to-status-dot.danger {
+          background: #e28a26;
+          box-shadow: 0 0 8px rgba(226, 138, 38, 0.3);
         }
 
-        .ai-flow-signal.three {
-          animation-delay: 1.8s;
+        .to-panel-divider {
+          height: 1px;
+          background: var(--to-line);
         }
 
-        /*
-          Flow nodes.
-          No cards.
-        */
-
-        .ai-flow-node {
-          position: absolute;
-
-          top: 50%;
-
-          transform:
-            translateY(-50%);
-
+        .to-scene-heading {
           display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 19px 22px 0;
+        }
+
+        .to-scene-eyebrow {
+          color: #6c9000;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+        }
+
+        .to-scene-heading h3 {
+          margin: 6px 0 0;
+          color: #14283b;
+          font-size: clamp(17px, 2.3vw, 22px);
+          font-weight: 850;
+          letter-spacing: -0.035em;
+        }
+
+        .to-scene-number {
+          color: #6c9000;
+          font-size: 22px;
+          font-weight: 900;
+          letter-spacing: -0.06em;
+        }
+
+        .to-scene-number span {
+          margin-left: 3px;
+          color: #8290a0;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0;
+        }
+
+        .to-scene-viewport {
+          position: relative;
+          height: 320px;
+          min-width: 0;
+          animation: to-scene-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .to-visual {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        /* THREAT RADAR */
+
+        .to-radar-orbit {
+          position: absolute;
+          top: 49%;
+          left: 50%;
+          width: min(230px, 58%);
+          aspect-ratio: 1;
+          transform: translate(-50%, -50%);
+          border: 1px solid rgba(112, 151, 0, 0.28);
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(168, 217, 0, 0.12), transparent 70%);
+        }
+
+        .to-radar-ring {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          aspect-ratio: 1;
+          border: 1px solid rgba(112, 151, 0, 0.24);
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .to-radar-ring.ring-a { width: 76%; }
+        .to-radar-ring.ring-b { width: 49%; }
+
+        .to-radar-ring.ring-c {
+          width: 22%;
+          border-color: rgba(112, 151, 0, 0.4);
+        }
+
+        .to-radar-cross {
+          position: absolute;
+          background: rgba(112, 151, 0, 0.2);
+        }
+
+        .to-radar-cross.horizontal {
+          top: 50%;
+          left: 0;
+          width: 100%;
+          height: 1px;
+        }
+
+        .to-radar-cross.vertical {
+          top: 0;
+          left: 50%;
+          width: 1px;
+          height: 100%;
+        }
+
+        .to-radar-sweep {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          border-radius: 50%;
+        }
+
+        .to-radar-sweep::before {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 50%;
+          height: 50%;
+          content: "";
+          transform-origin: bottom left;
+          background: conic-gradient(
+            from 0deg,
+            rgba(168, 217, 0, 0.38),
+            rgba(168, 217, 0, 0.09) 45%,
+            transparent 75%
+          );
+          animation: to-radar-spin 4s linear infinite;
+        }
+
+        .to-radar-center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          display: flex;
+          width: 49px;
+          height: 49px;
+          align-items: center;
+          justify-content: center;
+          transform: translate(-50%, -50%);
+          border: 1px solid #d1e59b;
+          border-radius: 50%;
+          color: #608300;
+          background: #ffffff;
+          box-shadow: 0 5px 20px rgba(90, 120, 0, 0.12);
+        }
+
+        .to-threat-dot {
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #7aa900;
+          box-shadow: 0 0 10px rgba(122, 169, 0, 0.45);
+          animation: to-threat-pulse 2s ease-in-out infinite;
+        }
+
+        .to-threat-dot.warning {
+          background: #e28a26;
+          box-shadow: 0 0 10px rgba(226, 138, 38, 0.45);
+        }
+
+        .to-float-label {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          padding: 9px 11px;
+          border: 1px solid #e0e7ed;
+          border-radius: 7px;
+          color: #26384b;
+          background: rgba(255, 255, 255, 0.96);
+          box-shadow: 0 5px 18px rgba(22, 40, 55, 0.07);
+          font-size: 9px;
+          font-weight: 800;
+        }
+
+        .radar-label-one {
+          top: 17%;
+          right: 5%;
+        }
+
+        .radar-label-two {
+          bottom: 15%;
+          left: 5%;
+        }
+
+        .to-radar-caption {
+          position: absolute;
+          bottom: 17px;
+          left: 50%;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transform: translateX(-50%);
+          white-space: nowrap;
+          color: #64748b;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+        }
+
+        .to-caption-line {
+          width: 19px;
+          height: 2px;
+          background: #8dbb00;
+        }
+
+        /* CONTENT DISCOVERY */
+
+        .to-connection-lines {
+          position: absolute;
+          inset: 8% 5%;
+          width: 90%;
+          height: 84%;
+          overflow: visible;
+        }
+
+        .to-connection-lines line {
+          stroke: rgba(112, 151, 0, 0.35);
+          stroke-width: 1.3;
+          stroke-dasharray: 5 6;
+          animation: to-line-dash 7s linear infinite;
+        }
+
+        .to-connection-lines circle {
+          fill: #8dbb00;
+          filter: drop-shadow(0 0 4px rgba(141, 187, 0, 0.4));
+        }
+
+        .to-discovery-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          z-index: 3;
+          display: flex;
+          width: 84px;
+          height: 84px;
           flex-direction: column;
           align-items: center;
-
-          width: 120px;
-
-          text-align: center;
-
-          z-index: 5;
-        }
-
-        .ai-flow-node.one {
-          left: 7%;
-        }
-
-        .ai-flow-node.two {
-          left: 50%;
-
-          transform:
-            translate(-50%, -50%);
-        }
-
-        .ai-flow-node.three {
-          right: 7%;
-        }
-
-        .ai-flow-icon {
-          position: relative;
-
-          width: 54px;
-          height: 54px;
-
-          display: flex;
-          align-items: center;
           justify-content: center;
-
+          gap: 5px;
+          transform: translate(-50%, -50%);
+          border: 1px solid #cfe39a;
           border-radius: 50%;
-
-          background:
-            var(--ai-background);
-
-          border:
-            1px solid rgba(109, 144, 11, 0.25);
-
-          color:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 25px rgba(109, 144, 11, 0.05);
+          color: #638700;
+          background: radial-gradient(circle, #ffffff, #f2f8df);
+          box-shadow: 0 5px 28px rgba(104, 145, 0, 0.12);
+          animation: to-core-pulse 3s ease-in-out infinite;
         }
 
-        .ai-flow-icon::before {
-          content: "";
-
-          position: absolute;
-
-          inset: -7px;
-
-          border:
-            1px solid rgba(109, 144, 11, 0.08);
-
-          border-radius: 50%;
-
-          animation:
-            flowNodePulse 2.2s ease-out infinite;
-        }
-
-        .ai-flow-node.warning .ai-flow-icon {
-          color:
-            #c57c24;
-
-          border-color:
-            rgba(197, 124, 36, 0.3);
-        }
-
-        .ai-flow-node.success .ai-flow-icon {
-          color:
-            #15966c;
-
-          border-color:
-            rgba(21, 150, 108, 0.3);
-        }
-
-        .ai-flow-title {
-          margin-top: 14px;
-
-          color:
-            var(--ai-heading);
-
+        .to-discovery-core span {
           font-size: 8px;
-
           font-weight: 900;
-
-          letter-spacing: 0.04em;
+          letter-spacing: 0.16em;
         }
 
-        .ai-flow-subtitle {
-          margin-top: 4px;
-
-          color:
-            var(--ai-muted);
-
-          font-size: 6px;
-
-          letter-spacing: 0.04em;
-        }
-
-        .ai-flow-status {
-          margin-top: 7px;
-
-          color:
-            var(--ai-green);
-
-          font-size: 6px;
-
-          font-weight: 900;
-
-          letter-spacing: 0.12em;
-        }
-
-        .ai-flow-node.warning .ai-flow-status {
-          color:
-            #c57c24;
-        }
-
-        .ai-flow-node.success .ai-flow-status {
-          color:
-            #15966c;
-        }
-
-        /* =====================================================
-           BOTTOM METRICS
-        ===================================================== */
-
-        .track-ai-bottom {
+        .to-source {
           position: absolute;
+          z-index: 2;
+          display: flex;
+          max-width: 45%;
+          align-items: center;
+          gap: 7px;
+          animation: to-source-float 3.5s ease-in-out infinite;
+        }
 
-          left: 18%;
-          right: 18%;
-          bottom: 38px;
+        .source-1 { top: 9%; left: 4%; }
+        .source-2 { top: 9%; right: 3%; animation-delay: 0.6s; }
+        .source-3 { bottom: 14%; left: 4%; animation-delay: 1s; }
+        .source-4 { right: 3%; bottom: 14%; animation-delay: 1.5s; }
 
+        .to-source-icon {
+          display: flex;
+          width: 33px;
+          height: 33px;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #dce9bc;
+          border-radius: 50%;
+          color: #638700;
+          background: #f5f9e9;
+        }
+
+        .to-source-copy {
+          display: flex;
+          min-width: 0;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .to-source-copy strong {
+          color: #23364a;
+          font-size: 9px;
+          font-weight: 900;
+          white-space: nowrap;
+        }
+
+        .to-source-copy small {
+          color: #64748b;
+          font-size: 7px;
+          white-space: nowrap;
+        }
+
+        .to-source-pulse {
+          position: absolute;
+          right: -2px;
+          bottom: -2px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #8dbb00;
+          box-shadow: 0 0 7px rgba(141, 187, 0, 0.4);
+        }
+
+        .to-discovery-footer,
+        .to-flow-footer {
+          position: absolute;
+          bottom: 13px;
+          left: 50%;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transform: translateX(-50%);
+          white-space: nowrap;
+          color: #64748b;
+          font-size: 8px;
+          font-weight: 800;
+        }
+
+        /* RIGHTS PROTECTION */
+
+        .to-protection {
           display: flex;
           align-items: center;
           justify-content: center;
-
-          gap: 15px;
-
-          z-index: 20;
         }
 
-        .track-ai-bottom > div:not(.track-ai-bottom-line) {
+        .to-protection-glow {
+          position: absolute;
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          background: rgba(168, 217, 0, 0.14);
+          filter: blur(38px);
+          animation: to-glow 4s ease-in-out infinite alternate;
+        }
+
+        .to-protection-orbit {
+          position: absolute;
+          width: 235px;
+          height: 130px;
+          border: 1px solid rgba(112, 151, 0, 0.22);
+          border-radius: 50%;
+          animation: to-orbit 14s linear infinite;
+        }
+
+        .to-protection-orbit.orbit-two {
+          width: 190px;
+          height: 245px;
+          border-color: rgba(36, 160, 125, 0.2);
+          animation-direction: reverse;
+          animation-duration: 18s;
+        }
+
+        .to-protection-orbit.orbit-three {
+          width: 285px;
+          height: 185px;
+          border-color: rgba(112, 151, 0, 0.14);
+          animation-duration: 22s;
+        }
+
+        .to-protection-shield {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          width: 112px;
+          height: 126px;
+          align-items: center;
+          justify-content: center;
+          color: #739c00;
+          filter: drop-shadow(0 5px 12px rgba(112, 151, 0, 0.16));
+          animation: to-shield-float 3.4s ease-in-out infinite;
+        }
+
+        .to-shield-check {
+          position: absolute;
+          right: 5px;
+          bottom: 15px;
+          display: flex;
+          width: 30px;
+          height: 30px;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #d3e7a4;
+          border-radius: 50%;
+          color: #648900;
+          background: #ffffff;
+        }
+
+        .to-protection-label {
+          position: absolute;
           display: flex;
           align-items: center;
-
-          gap: 6px;
+          gap: 7px;
+          color: #304257;
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 0.02em;
         }
 
-        .track-ai-bottom span {
-          color:
-            var(--ai-muted);
+        .protection-one { top: 19%; left: 7%; }
+        .protection-two { right: 5%; bottom: 23%; }
 
-          font-size: 5.5px;
-
-          font-weight: 800;
-
+        .protection-three {
+          top: 20%;
+          right: 6%;
+          color: #648900;
+          font-size: 8px;
+          font-weight: 900;
           letter-spacing: 0.12em;
         }
 
-        .track-ai-bottom strong {
-          color:
-            var(--ai-heading);
+        .to-protection-footer {
+          position: absolute;
+          bottom: 14px;
+          left: 50%;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          gap: 5px;
+          transform: translateX(-50%);
+          white-space: nowrap;
+        }
 
-          font-size: 7px;
+        .to-protection-footer span {
+          color: #64748b;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+        }
 
+        .to-protection-footer strong {
+          color: #14283b;
+          font-size: 12px;
           font-weight: 900;
         }
 
-        .track-ai-bottom-line {
-          width: 22px;
-          height: 1px;
+        /* PROTECTION FLOW */
 
-          background:
-            rgba(109, 144, 11, 0.16);
-        }
-
-        /* =====================================================
-           PROGRESS
-        ===================================================== */
-
-        .track-ai-progress {
-          position: absolute;
-
-          left: 50%;
-          bottom: 17px;
-
-          transform:
-            translateX(-50%);
-
+        .to-flow {
           display: flex;
           align-items: center;
+          justify-content: center;
+        }
 
+        .to-flow-track {
+          position: absolute;
+          top: 43%;
+          right: 12%;
+          left: 12%;
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            #e7a04d,
+            #9dc900,
+            #3cae83
+          );
+        }
+
+        .to-flow-track-progress {
+          position: absolute;
+          inset: 0;
+          transform-origin: left;
+          background: #8dbb00;
+          animation: to-flow-progress 3.5s ease-in-out infinite alternate;
+        }
+
+        .to-flow-signal {
+          position: absolute;
+          top: 50%;
+          width: 7px;
+          height: 7px;
+          transform: translateY(-50%);
+          border-radius: 50%;
+          background: #83b500;
+          box-shadow: 0 0 10px rgba(131, 181, 0, 0.4);
+          animation: to-flow-signal 2.8s linear infinite;
+        }
+
+        .to-flow-signal.signal-two { animation-delay: 0.9s; }
+        .to-flow-signal.signal-three { animation-delay: 1.8s; }
+
+        .to-flow-nodes {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          width: 100%;
+          align-items: center;
+          justify-content: space-evenly;
+          padding: 0 3%;
+        }
+
+        .to-flow-node {
+          display: flex;
+          width: 28%;
+          min-width: 0;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .to-flow-icon {
+          display: flex;
+          width: 57px;
+          height: 57px;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #d4e4ae;
+          border-radius: 50%;
+          color: #668a00;
+          background: #f5f9e9;
+          box-shadow: 0 5px 20px rgba(60, 80, 30, 0.07);
+          animation: to-node-pulse 2.6s ease-in-out infinite;
+        }
+
+        .to-flow-node.warning .to-flow-icon {
+          border-color: #f0d5b5;
+          color: #c87920;
+          background: #fff8ef;
+        }
+
+        .to-flow-node.success .to-flow-icon {
+          border-color: #b9e5d4;
+          color: #218960;
+          background: #effaf5;
+        }
+
+        .to-flow-node strong {
+          margin-top: 13px;
+          color: #24364a;
+          font-size: 10px;
+          font-weight: 900;
+          letter-spacing: 0.1em;
+        }
+
+        .to-flow-node > span {
+          margin-top: 5px;
+          color: #64748b;
+          font-size: 8px;
+        }
+
+        .to-flow-node small {
+          margin-top: 9px;
+          color: #668a00;
+          font-size: 7px;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+        }
+
+        .to-flow-node.warning small { color: #b96b19; }
+        .to-flow-node.success small { color: #218960; }
+
+        .to-flow-arrow {
+          position: relative;
+          z-index: 3;
+          flex-shrink: 0;
+          margin: 0 -5px;
+          color: #779d00;
+        }
+
+        /* FOOTER */
+
+        .to-panel-footer {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+          padding: 16px 18px;
+          background: rgba(242, 246, 249, 0.8);
+        }
+
+        .to-footer-metric {
+          display: flex;
+          min-width: 0;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .to-footer-icon {
+          display: flex;
+          width: 31px;
+          height: 31px;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #dce9bd;
+          border-radius: 8px;
+          color: #638700;
+          background: #f7faed;
+        }
+
+        .to-footer-metric > div {
+          display: flex;
+          min-width: 0;
+          flex-direction: column;
           gap: 5px;
         }
 
-        .track-ai-progress span {
-          width: 15px;
-          height: 2px;
-
-          border-radius: 999px;
-
-          background:
-            rgba(80, 105, 87, 0.18);
-
-          transition:
-            all 450ms ease;
+        .to-footer-metric small {
+          color: #64748b;
+          font-size: 7px;
+          font-weight: 900;
+          letter-spacing: 0.08em;
         }
 
-        .track-ai-progress span.active {
-          width: 30px;
-
-          background:
-            var(--ai-green-bright);
-
-          box-shadow:
-            0 0 10px rgba(109, 144, 11, 0.25);
+        .to-footer-metric strong {
+          overflow: hidden;
+          color: #24364a;
+          font-size: 9px;
+          font-weight: 900;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
-        /* =====================================================
-           FLOATING LABELS
-        ===================================================== */
-
-        .track-ai-floating-label {
-          position: absolute;
-
+        .to-panel-progress {
           display: flex;
           align-items: center;
-
-          gap: 7px;
-
-          color:
-            var(--ai-muted);
-
-          font-size: 7px;
-
-          font-weight: 800;
-
-          letter-spacing: 0.08em;
-
-          text-transform: uppercase;
-
-          white-space: nowrap;
-
-          animation:
-            floatingTechLabel 4s ease-in-out infinite;
-
-          z-index: 20;
+          justify-content: center;
+          gap: 6px;
+          padding: 12px 0 15px;
         }
 
-        .track-ai-floating-label span {
-          width: 5px;
-          height: 5px;
-
-          border-radius: 50%;
-
-          background:
-            var(--ai-green);
-
-          box-shadow:
-            0 0 9px rgba(109, 144, 11, 0.4);
+        .to-panel-progress button {
+          width: 18px;
+          height: 4px;
+          padding: 0;
+          border: 0;
+          border-radius: 99px;
+          background: #d7e0e7;
+          cursor: pointer;
+          transition: width 0.3s ease, background 0.3s ease;
         }
 
-        .track-ai-floating-label.label-one {
-          top: 28%;
-          left: -38px;
+        .to-panel-progress button:hover {
+          background: #a9c76b;
         }
 
-        .track-ai-floating-label.label-two {
-          top: 15%;
-          right: -40px;
-
-          animation-delay:
-            1s;
+        .to-panel-progress button.active {
+          width: 35px;
+          background: #8dbb00;
+          box-shadow: 0 0 8px rgba(141, 187, 0, 0.2);
         }
 
-        .track-ai-floating-label.label-three {
-          bottom: 22%;
-          right: -32px;
+        /* ANIMATIONS */
 
-          animation-delay:
-            2s;
-        }
-
-        /* =====================================================
-           DARK MODE
-        ===================================================== */
-
-        html.dark {
-          --ai-green: #add132;
-          --ai-green-bright: #add132;
-          --ai-green-light: #c8eb62;
-
-          --ai-heading: #edf7f1;
-          --ai-text: rgba(221, 239, 230, 0.78);
-          --ai-muted: rgba(154, 188, 176, 0.58);
-
-          --ai-line: rgba(111, 157, 139, 0.22);
-          --ai-line-light: rgba(111, 157, 139, 0.12);
-
-          --ai-glow: rgba(173, 209, 50, 0.18);
-
-          --ai-background: #071a15;
-        }
-
-        html.dark .track-ai-visual {
-          border-color:
-            rgba(111, 157, 139, 0.2);
-
-          background:
-            radial-gradient(
-              circle at 50% 45%,
-              rgba(173, 209, 50, 0.06),
-              transparent 35%
-            );
-
-          box-shadow:
-            0 40px 100px rgba(0, 0, 0, 0.2);
-        }
-
-        html.dark .track-ai-visual::before {
-          background:
-            linear-gradient(
-              90deg,
-              transparent,
-              rgba(173, 209, 50, 0.55),
-              transparent
-            );
-
-          box-shadow:
-            0 0 18px rgba(173, 209, 50, 0.2);
-        }
-
-        html.dark .track-ai-grid {
-          opacity: 0.22;
-
-          background-image:
-            linear-gradient(
-              rgba(173, 209, 50, 0.055) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(173, 209, 50, 0.055) 1px,
-              transparent 1px
-            );
-        }
-
-        html.dark .track-ai-outer-ring {
-          border-color:
-            rgba(173, 209, 50, 0.08);
-        }
-
-        html.dark .track-ai-outer-ring.ring-two {
-          border-color:
-            rgba(173, 209, 50, 0.06);
-        }
-
-        html.dark .track-ai-outer-ring.ring-three {
-          border-color:
-            rgba(36, 197, 138, 0.055);
-        }
-
-        html.dark .ai-radar-core {
-          border-color:
-            rgba(173, 209, 50, 0.22);
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(173, 209, 50, 0.07),
-              transparent 65%
-            );
-
-          box-shadow:
-            0 0 70px rgba(173, 209, 50, 0.05);
-        }
-
-        html.dark .ai-radar-circle {
-          border-color:
-            rgba(173, 209, 50, 0.13);
-        }
-
-        html.dark .ai-radar-circle.three {
-          border-color:
-            rgba(173, 209, 50, 0.22);
-        }
-
-        html.dark .ai-radar-horizontal,
-        html.dark .ai-radar-vertical {
-          background:
-            rgba(173, 209, 50, 0.11);
-        }
-
-        html.dark .ai-radar-center {
-          border-color:
-            #add132;
-
-          background:
-            #071a15;
-
-          box-shadow:
-            0 0 22px rgba(173, 209, 50, 0.5);
-        }
-
-        html.dark .ai-radar-center::after {
-          background:
-            #add132;
-        }
-
-        html.dark .ai-radar-label {
-          color:
-            rgba(221, 239, 230, 0.72);
-        }
-
-        html.dark .ai-radar-metric strong {
-          color:
-            #edf7f1;
-        }
-
-        html.dark .ai-radar-metric span {
-          color:
-            rgba(154, 188, 176, 0.55);
-        }
-
-        html.dark .ai-discovery-lines line {
-          stroke:
-            rgba(173, 209, 50, 0.23);
-        }
-
-        html.dark .ai-discovery-core {
-          color:
-            #add132;
-
-          border-color:
-            rgba(173, 209, 50, 0.3);
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(173, 209, 50, 0.12),
-              rgba(173, 209, 50, 0.025) 55%,
-              transparent 70%
-            );
-
-          box-shadow:
-            0 0 60px rgba(173, 209, 50, 0.07);
-        }
-
-        html.dark .ai-discovery-core::before {
-          border-color:
-            rgba(173, 209, 50, 0.11);
-        }
-
-        html.dark .ai-discovery-core::after {
-          border-color:
-            rgba(173, 209, 50, 0.15);
-        }
-
-        html.dark .ai-source-icon {
-          border-color:
-            rgba(173, 209, 50, 0.2);
-
-          color:
-            #add132;
-
-          background:
-            rgba(173, 209, 50, 0.06);
-        }
-
-        html.dark .ai-source-text strong {
-          color:
-            #e1eee8;
-        }
-
-        html.dark .ai-source-text span {
-          color:
-            rgba(154, 188, 176, 0.52);
-        }
-
-        html.dark .ai-protection-orbit {
-          border-color:
-            rgba(173, 209, 50, 0.11);
-        }
-
-        html.dark .ai-protection-orbit.two {
-          border-color:
-            rgba(36, 197, 138, 0.08);
-        }
-
-        html.dark .ai-protection-orbit.three {
-          border-color:
-            rgba(173, 209, 50, 0.07);
-        }
-
-        html.dark .ai-shield {
-          color:
-            #add132;
-
-          background:
-            linear-gradient(
-              145deg,
-              rgba(173, 209, 50, 0.2),
-              rgba(173, 209, 50, 0.025)
-            );
-
-          filter:
-            drop-shadow(
-              0 0 28px rgba(173, 209, 50, 0.18)
-            );
-        }
-
-        html.dark .ai-shield::before {
-          background:
-            #071a15;
-        }
-
-        html.dark .ai-protection-label {
-          color:
-            rgba(221, 239, 230, 0.7);
-        }
-
-        html.dark .ai-flow-line {
-          background:
-            linear-gradient(
-              90deg,
-              rgba(215, 138, 41, 0.4),
-              rgba(173, 209, 50, 0.45),
-              rgba(32, 197, 138, 0.45)
-            );
-        }
-
-        html.dark .ai-flow-icon {
-          background:
-            #071a15;
-
-          border-color:
-            rgba(173, 209, 50, 0.25);
-
-          color:
-            #add132;
-
-          box-shadow:
-            0 0 28px rgba(173, 209, 50, 0.05);
-        }
-
-        html.dark .ai-flow-icon::before {
-          border-color:
-            rgba(173, 209, 50, 0.08);
-        }
-
-        html.dark .ai-flow-node.warning .ai-flow-icon {
-          color:
-            #e1a34c;
-
-          border-color:
-            rgba(225, 163, 76, 0.3);
-        }
-
-        html.dark .ai-flow-node.success .ai-flow-icon {
-          color:
-            #36c995;
-
-          border-color:
-            rgba(54, 201, 149, 0.3);
-        }
-
-        html.dark .ai-flow-title {
-          color:
-            #edf7f1;
-        }
-
-        html.dark .ai-flow-subtitle {
-          color:
-            rgba(154, 188, 176, 0.55);
-        }
-
-        html.dark .track-ai-bottom strong {
-          color:
-            #edf7f1;
-        }
-
-        html.dark .track-ai-bottom span {
-          color:
-            rgba(154, 188, 176, 0.5);
-        }
-
-        html.dark .track-ai-bottom-line {
-          background:
-            rgba(173, 209, 50, 0.13);
-        }
-
-        html.dark .track-ai-progress span {
-          background:
-            rgba(150, 185, 172, 0.17);
-        }
-
-        html.dark .track-ai-progress span.active {
-          background:
-            #add132;
-
-          box-shadow:
-            0 0 12px rgba(173, 209, 50, 0.3);
-        }
-
-        html.dark .track-ai-floating-label {
-          color:
-            rgba(154, 188, 176, 0.58);
-        }
-
-        html.dark .track-ai-floating-label span {
-          background:
-            #add132;
-
-          box-shadow:
-            0 0 10px rgba(173, 209, 50, 0.45);
-        }
-
-        /* =====================================================
-           ANIMATIONS
-        ===================================================== */
-
-        @keyframes aiGlowOne {
-          0%,
-          100% {
-            transform:
-              translate(0, 0)
-              scale(1);
-          }
-
-          50% {
-            transform:
-              translate(-18px, 15px)
-              scale(1.1);
-          }
-        }
-
-        @keyframes aiGlowTwo {
-          0%,
-          100% {
-            transform:
-              translate(0, 0)
-              scale(1);
-          }
-
-          50% {
-            transform:
-              translate(18px, -12px)
-              scale(1.08);
-          }
-        }
-
-        @keyframes outerRotate {
-          from {
-            transform:
-              translate(-50%, -50%)
-              rotate(0deg);
-          }
-
-          to {
-            transform:
-              translate(-50%, -50%)
-              rotate(360deg);
-          }
-        }
-
-        @keyframes outerRotateReverse {
-          from {
-            transform:
-              translate(-50%, -50%)
-              rotate(360deg);
-          }
-
-          to {
-            transform:
-              translate(-50%, -50%)
-              rotate(0deg);
-          }
-        }
-
-        @keyframes statusPulse {
-          0%,
-          100% {
-            opacity: 0.45;
-            transform: scale(0.85);
-          }
-
-          50% {
-            opacity: 1;
-            transform: scale(1.2);
-          }
-        }
-
-        @keyframes sceneAppear {
+        @keyframes to-scene-in {
           from {
             opacity: 0;
-
-            transform:
-              scale(0.97)
-              translateY(10px);
+            transform: translateY(8px);
           }
-
           to {
             opacity: 1;
-
-            transform:
-              scale(1)
-              translateY(0);
+            transform: translateY(0);
           }
         }
 
-        @keyframes radarRotate {
+        @keyframes to-radar-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes to-threat-pulse {
+          0%, 100% {
+            opacity: 0.5;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.35);
+          }
+        }
+
+        @keyframes to-status-pulse {
+          0%, 100% { opacity: 0.65; }
+          50% { opacity: 1; }
+        }
+
+        @keyframes to-core-pulse {
+          0%, 100% {
+            box-shadow: 0 5px 22px rgba(104, 145, 0, 0.08);
+          }
+          50% {
+            box-shadow: 0 5px 35px rgba(104, 145, 0, 0.2);
+          }
+        }
+
+        @keyframes to-line-dash {
+          to { stroke-dashoffset: -44; }
+        }
+
+        @keyframes to-source-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+
+        @keyframes to-orbit {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes to-shield-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-7px); }
+        }
+
+        @keyframes to-flow-progress {
+          from { transform: scaleX(0.35); }
+          to { transform: scaleX(1); }
+        }
+
+        @keyframes to-flow-signal {
+          0% { left: 0; opacity: 0; }
+          12% { opacity: 1; }
+          88% { opacity: 1; }
+          100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes to-node-pulse {
+          0%, 100% {
+            box-shadow: 0 5px 15px rgba(60, 80, 30, 0.05);
+          }
+          50% {
+            box-shadow: 0 5px 24px rgba(104, 145, 0, 0.14);
+          }
+        }
+
+        @keyframes to-glow {
           from {
-            transform:
-              rotate(0deg);
-          }
-
-          to {
-            transform:
-              rotate(360deg);
-          }
-        }
-
-        @keyframes corePulse {
-          0%,
-          100% {
-            transform:
-              scale(0.7);
-
             opacity: 0.55;
+            transform: scale(0.95);
           }
-
-          50% {
-            transform:
-              scale(1.15);
-
-            opacity: 1;
-          }
-        }
-
-        @keyframes threatPulse {
-          0%,
-          100% {
-            transform:
-              scale(0.75);
-
-            opacity: 0.35;
-          }
-
-          50% {
-            transform:
-              scale(1.45);
-
-            opacity: 1;
-          }
-        }
-
-        @keyframes lineDash {
           to {
-            stroke-dashoffset:
-              -40;
-          }
-        }
-
-        @keyframes discoveryCore {
-          0%,
-          100% {
-            transform:
-              translate(-50%, -50%)
-              scale(0.96);
-          }
-
-          50% {
-            transform:
-              translate(-50%, -50%)
-              scale(1.04);
-          }
-        }
-
-        @keyframes discoveryRing {
-          0% {
-            opacity: 0.7;
-
-            transform:
-              scale(0.85);
-          }
-
-          100% {
-            opacity: 0;
-
-            transform:
-              scale(1.2);
-          }
-        }
-
-        @keyframes discoveryRotate {
-          from {
-            transform:
-              rotate(0deg);
-          }
-
-          to {
-            transform:
-              rotate(360deg);
-          }
-        }
-
-        @keyframes sourceFloat {
-          0%,
-          100% {
-            transform:
-              translateY(0);
-          }
-
-          50% {
-            transform:
-              translateY(-6px);
-          }
-        }
-
-        @keyframes sourceSignal {
-          0%,
-          100% {
-            opacity: 0.3;
-
-            transform:
-              scale(0.7);
-          }
-
-          50% {
             opacity: 1;
-
-            transform:
-              scale(1.5);
+            transform: scale(1.08);
           }
         }
 
-        @keyframes protectionOrbit {
-          from {
-            transform:
-              rotate(0deg);
+        /* TABLET AND DESKTOP */
+
+        @media (min-width: 640px) {
+          .to-panel-header {
+            padding: 19px 23px;
           }
 
-          to {
-            transform:
-              rotate(360deg);
-          }
-        }
-
-        @keyframes shieldFloat {
-          0%,
-          100% {
-            transform:
-              translateY(0)
-              scale(0.98);
+          .to-scene-heading {
+            padding: 21px 25px 0;
           }
 
-          50% {
-            transform:
-              translateY(-8px)
-              scale(1.02);
+          .to-panel-footer {
+            padding: 18px 22px;
+            gap: 13px;
+          }
+
+          .to-scene-viewport {
+            height: 345px;
           }
         }
 
-        @keyframes shieldGlow {
-          0%,
-          100% {
-            opacity: 0.35;
+        /* MOBILE */
 
-            transform:
-              scale(0.85);
-          }
-
-          50% {
-            opacity: 0.8;
-
-            transform:
-              scale(1.1);
-          }
-        }
-
-        @keyframes protectionDot {
-          0%,
-          100% {
-            opacity: 0.25;
-
-            transform:
-              scale(0.7);
-          }
-
-          50% {
-            opacity: 1;
-
-            transform:
-              scale(1.4);
-          }
-        }
-
-        @keyframes flowSignal {
-          0% {
-            left: 12%;
-
-            opacity: 0;
-          }
-
-          10% {
-            opacity: 1;
-          }
-
-          90% {
-            opacity: 1;
-          }
-
-          100% {
-            left: 88%;
-
-            opacity: 0;
-          }
-        }
-
-        @keyframes flowNodePulse {
-          0% {
-            opacity: 0.7;
-
-            transform:
-              scale(0.85);
-          }
-
-          100% {
-            opacity: 0;
-
-            transform:
-              scale(1.25);
-          }
-        }
-
-        @keyframes floatingTechLabel {
-          0%,
-          100% {
-            transform:
-              translateY(0);
-          }
-
-          50% {
-            transform:
-              translateY(-7px);
-          }
-        }
-
-        /* =====================================================
-           TABLET
-        ===================================================== */
-
-        @media (max-width: 900px) {
+        @media (max-width: 420px) {
           .track-intelligence-animation {
-            max-width: 540px;
+            border-radius: 13px;
           }
 
-          .track-ai-floating-label.label-one {
-            left: -20px;
+          .to-panel-header {
+            padding: 13px 12px;
+            gap: 8px;
           }
 
-          .track-ai-floating-label.label-two {
-            right: -22px;
+          .to-brand-mark {
+            width: 32px;
+            height: 32px;
           }
 
-          .track-ai-floating-label.label-three {
-            right: -20px;
-          }
-        }
-
-        /* =====================================================
-           MOBILE
-        ===================================================== */
-
-        @media (max-width: 640px) {
-
-          .track-intelligence-animation {
-            min-height: 430px;
+          .to-panel-heading strong {
+            font-size: 10px;
           }
 
-          .track-ai-visual {
-            min-height: 405px;
-
-            border-radius: 24px;
+          .to-panel-heading span {
+            font-size: 7px;
+            letter-spacing: 0.06em;
           }
 
-          .track-ai-top-label {
-            top: 23px;
-
-            font-size: 6px;
-
-            letter-spacing: 0.13em;
+          .to-live-badge {
+            padding: 6px 7px;
+            font-size: 7px;
           }
 
-          .track-ai-live {
-            font-size: 5.5px;
+          .to-scene-heading {
+            padding: 15px 13px 0;
           }
 
-          .track-ai-scene-title {
-            top: 49px;
+          .to-scene-eyebrow {
+            font-size: 7px;
+            letter-spacing: 0.06em;
+          }
 
+          .to-scene-heading h3 {
+            font-size: 16px;
+          }
+
+          .to-scene-viewport {
+            height: 285px;
+          }
+
+          .to-radar-orbit {
+            width: 190px;
+          }
+
+          .to-float-label {
+            padding: 6px 7px;
             font-size: 8px;
           }
 
-          .track-ai-scene-title span {
+          .to-source {
+            gap: 5px;
+          }
+
+          .to-source-icon {
+            width: 26px;
+            height: 26px;
+          }
+
+          .to-source-icon svg {
+            width: 15px;
+          }
+
+          .to-source-copy strong {
+            font-size: 8px;
+          }
+
+          .to-source-copy small {
             font-size: 6px;
           }
 
-          .track-ai-scene {
-            padding:
-              73px 12px 65px;
-          }
-
-          /* -----------------------------------------------
-             RADAR
-          ----------------------------------------------- */
-
-          .ai-radar-core {
-            width: 185px;
-            height: 185px;
-          }
-
-          .ai-radar-metric {
-            right: 3%;
-          }
-
-          .ai-radar-metric strong {
-            font-size: 19px;
-          }
-
-          .ai-radar-metric span {
-            font-size: 5px;
-          }
-
-          .ai-radar-label {
-            font-size: 5.5px;
-          }
-
-          .ai-radar-label.one {
-            right: -3%;
-          }
-
-          /* -----------------------------------------------
-             DISCOVERY
-          ----------------------------------------------- */
-
-          .ai-discovery-core {
+          .to-discovery-core {
             width: 70px;
             height: 70px;
           }
 
-          .ai-discovery-core svg {
-            width: 23px;
-            height: 23px;
+          .to-protection-orbit.orbit-three {
+            width: 240px;
           }
 
-          .ai-source {
+          .to-protection-label {
+            font-size: 8px;
+          }
+
+          .to-flow-icon {
+            width: 45px;
+            height: 45px;
+          }
+
+          .to-flow-icon svg {
+            width: 19px;
+          }
+
+          .to-flow-node strong {
+            font-size: 8px;
+          }
+
+          .to-flow-node > span {
+            font-size: 7px;
+          }
+
+          .to-flow-node small {
+            font-size: 6px;
+          }
+
+          .to-flow-arrow {
+            width: 12px;
+            margin: 0 -4px;
+          }
+
+          .to-panel-footer {
+            padding: 12px 10px;
+            gap: 6px;
+          }
+
+          .to-footer-metric {
             gap: 5px;
           }
 
-          .ai-source-icon {
+          .to-footer-icon {
             width: 24px;
             height: 24px;
           }
 
-          .ai-source-icon svg {
-            width: 11px;
-            height: 11px;
-          }
-
-          .ai-source-text strong {
-            font-size: 6.5px;
-          }
-
-          .ai-source-text span {
-            font-size: 5px;
-          }
-
-          .ai-source.one {
-            left: 0;
-          }
-
-          .ai-source.two {
-            right: 0;
-          }
-
-          .ai-source.three {
-            left: 1%;
-          }
-
-          .ai-source.four {
-            right: 1%;
-          }
-
-          /* -----------------------------------------------
-             PROTECTION
-          ----------------------------------------------- */
-
-          .ai-protection-orbit {
-            width: 245px;
-            height: 135px;
-          }
-
-          .ai-protection-orbit.two {
-            width: 205px;
-            height: 170px;
-          }
-
-          .ai-protection-orbit.three {
-            width: 150px;
-            height: 220px;
-          }
-
-          .ai-shield {
-            width: 88px;
-            height: 105px;
-          }
-
-          .ai-shield svg {
-            width: 39px;
-            height: 39px;
-          }
-
-          .ai-protection-label {
-            font-size: 5.5px;
-          }
-
-          .ai-protection-label.one {
-            left: 1%;
-          }
-
-          .ai-protection-label.two {
-            right: 1%;
-          }
-
-          /* -----------------------------------------------
-             FLOW
-          ----------------------------------------------- */
-
-          .ai-flow-line {
-            left: 9%;
-            right: 9%;
-          }
-
-          .ai-flow-node {
-            width: 85px;
-          }
-
-          .ai-flow-node.one {
-            left: 1%;
-          }
-
-          .ai-flow-node.three {
-            right: 1%;
-          }
-
-          .ai-flow-icon {
-            width: 44px;
-            height: 44px;
-          }
-
-          .ai-flow-icon svg {
-            width: 15px;
-            height: 15px;
-          }
-
-          .ai-flow-title {
-            font-size: 6.5px;
-          }
-
-          .ai-flow-subtitle {
-            font-size: 5px;
-          }
-
-          .ai-flow-status {
-            font-size: 5px;
-          }
-
-          /* -----------------------------------------------
-             BOTTOM
-          ----------------------------------------------- */
-
-          .track-ai-bottom {
-            left: 10%;
-            right: 10%;
-
-            bottom: 31px;
-
-            gap: 7px;
-          }
-
-          .track-ai-bottom > div:not(.track-ai-bottom-line) {
-            gap: 4px;
-          }
-
-          .track-ai-bottom span {
-            font-size: 4.5px;
-          }
-
-          .track-ai-bottom strong {
-            font-size: 5.5px;
-          }
-
-          .track-ai-bottom-line {
+          .to-footer-icon svg {
             width: 12px;
           }
 
-          .track-ai-progress {
-            bottom: 14px;
+          .to-footer-metric small {
+            font-size: 6px;
+            letter-spacing: 0.02em;
           }
 
-          .track-ai-progress span {
-            width: 10px;
-          }
-
-          .track-ai-progress span.active {
-            width: 21px;
-          }
-
-          /* -----------------------------------------------
-             FLOATING LABELS
-          ----------------------------------------------- */
-
-          .track-ai-floating-label {
-            display: none;
-          }
-
-          /* -----------------------------------------------
-             OUTER RINGS
-          ----------------------------------------------- */
-
-          .track-ai-outer-ring.ring-one {
-            width: 270px;
-            height: 270px;
-          }
-
-          .track-ai-outer-ring.ring-two {
-            width: 320px;
-            height: 170px;
-          }
-
-          .track-ai-outer-ring.ring-three {
-            width: 350px;
-            height: 130px;
+          .to-footer-metric strong {
+            font-size: 7px;
           }
         }
 
-        /* =====================================================
-           VERY SMALL MOBILE
-        ===================================================== */
-
-        @media (max-width: 380px) {
-
-          .track-intelligence-animation {
-            min-height: 405px;
+        @media (max-width: 350px) {
+          .to-source-copy small {
+            white-space: normal;
           }
 
-          .track-ai-visual {
-            min-height: 385px;
+          .to-source {
+            max-width: 48%;
           }
 
-          .ai-radar-core {
-            width: 160px;
-            height: 160px;
+          .to-panel-footer {
+            grid-template-columns: 1fr;
+            gap: 10px;
           }
 
-          .ai-radar-metric {
-            display: none;
+          .to-footer-metric {
+            justify-content: flex-start;
           }
 
-          .ai-discovery-core {
-            width: 60px;
-            height: 60px;
+          .to-footer-metric small,
+          .to-footer-metric strong {
+            font-size: 9px;
           }
 
-          .ai-source-text span {
-            display: none;
-          }
-
-          .ai-source-icon {
-            width: 22px;
-            height: 22px;
-          }
-
-          .ai-flow-node {
-            width: 70px;
-          }
-
-          .ai-flow-icon {
-            width: 38px;
-            height: 38px;
-          }
-
-          .ai-flow-title {
-            font-size: 5.5px;
-          }
-
-          .ai-flow-subtitle {
-            display: none;
-          }
-
-          .track-ai-bottom {
-            display: none;
+          .to-scene-viewport {
+            height: 300px;
           }
         }
-
-        /* =====================================================
-           REDUCED MOTION
-        ===================================================== */
 
         @media (prefers-reduced-motion: reduce) {
-
-          .track-ai-glow,
-          .track-ai-outer-ring,
-          .track-ai-status-dot,
-          .ai-radar-sweep::before,
-          .ai-radar-center::after,
-          .ai-threat,
-          .ai-discovery-lines line,
-          .ai-discovery-core,
-          .ai-discovery-core::before,
-          .ai-discovery-core::after,
-          .ai-source,
-          .ai-source-signal,
-          .ai-protection-orbit,
-          .ai-shield,
-          .ai-shield-glow,
-          .ai-protection-dot,
-          .ai-flow-signal,
-          .ai-flow-icon::before,
-          .track-ai-floating-label {
-            animation: none !important;
+          .track-intelligence-animation *,
+          .track-intelligence-animation *::before,
+          .track-intelligence-animation *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
           }
         }
-
       `}</style>
-    </div>
-  );
-}
-
-/* =========================================================
-   SCENE 01 — THREAT RADAR
-========================================================= */
-
-function ThreatRadar() {
-  return (
-    <div className="ai-radar-scene">
-
-      <div className="ai-radar-core">
-
-        <div className="ai-radar-circle one" />
-        <div className="ai-radar-circle two" />
-        <div className="ai-radar-circle three" />
-
-        <div className="ai-radar-horizontal" />
-        <div className="ai-radar-vertical" />
-
-        <div className="ai-radar-sweep" />
-
-        <div className="ai-radar-center" />
-
-        <span className="ai-threat one" />
-        <span className="ai-threat two" />
-        <span className="ai-threat three" />
-        <span className="ai-threat four" />
-
-        <div className="ai-radar-label one">
-          Threat Signal
-        </div>
-
-        <div className="ai-radar-label two">
-          Digital Signal
-        </div>
-
-      </div>
-
-      <div className="ai-radar-metric">
-        <strong>04</strong>
-
-        <span>
-          THREATS DETECTED
-        </span>
-      </div>
-
-    </div>
-  );
-}
-
-/* =========================================================
-   SCENE 02 — CONTENT DISCOVERY
-========================================================= */
-
-function ContentDiscovery() {
-  return (
-    <div className="ai-discovery-scene">
-
-      {/* Connection lines */}
-
-      <svg
-        className="ai-discovery-lines"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <line
-          x1="50"
-          y1="50"
-          x2="16"
-          y2="18"
-        />
-
-        <line
-          x1="50"
-          y1="50"
-          x2="84"
-          y2="18"
-        />
-
-        <line
-          x1="50"
-          y1="50"
-          x2="20"
-          y2="82"
-        />
-
-        <line
-          x1="50"
-          y1="50"
-          x2="80"
-          y2="82"
-        />
-      </svg>
-
-      {/* Center intelligence */}
-
-      <div className="ai-discovery-core">
-        <ScanSearch
-          size={29}
-          strokeWidth={1.4}
-        />
-      </div>
-
-      {/* Web */}
-
-      <SourceNode
-        className="one"
-        icon={<Globe2 size={13} />}
-        title="WEB"
-        value="1,284 signals"
-      />
-
-      {/* Search */}
-
-      <SourceNode
-        className="two"
-        icon={<Search size={13} />}
-        title="SEARCH"
-        value="462 matches"
-      />
-
-      {/* Social */}
-
-      <SourceNode
-        className="three"
-        icon={<Activity size={13} />}
-        title="SOCIAL"
-        value="318 signals"
-      />
-
-      {/* Streaming */}
-
-      <SourceNode
-        className="four"
-        icon={<Zap size={13} />}
-        title="STREAMING"
-        value="126 matches"
-      />
-
-    </div>
-  );
-}
-
-/* =========================================================
-   SOURCE NODE
-========================================================= */
-
-function SourceNode({
-  className,
-  icon,
-  title,
-  value,
-}) {
-  return (
-    <div className={`ai-source ${className}`}>
-
-      <div className="ai-source-icon">
-        {icon}
-      </div>
-
-      <div className="ai-source-text">
-        <strong>{title}</strong>
-        <span>{value}</span>
-      </div>
-
-      <span className="ai-source-signal" />
-
-    </div>
-  );
-}
-
-/* =========================================================
-   SCENE 03 — RIGHTS PROTECTION
-========================================================= */
-
-function RightsProtection() {
-  return (
-    <div className="ai-protection-scene">
-
-      <div className="ai-protection-orbit" />
-      <div className="ai-protection-orbit two" />
-      <div className="ai-protection-orbit three" />
-
-      <div className="ai-shield-glow" />
-
-      <div className="ai-shield">
-        <ShieldCheck
-          size={50}
-          strokeWidth={1.2}
-        />
-      </div>
-
-      <div className="ai-protection-label one">
-        Rights protected
-      </div>
-
-      <div className="ai-protection-label two">
-        Monitoring active
-      </div>
-
-      <div className="ai-protection-label three">
-        IP secured
-      </div>
-
-      <span className="ai-protection-dot one" />
-      <span className="ai-protection-dot two" />
-      <span className="ai-protection-dot three" />
-
-    </div>
-  );
-}
-
-/* =========================================================
-   SCENE 04 — PROTECTION FLOW
-========================================================= */
-
-function ProtectionFlow() {
-  return (
-    <div className="ai-flow-scene">
-
-      <div className="ai-flow-line" />
-
-      <div className="ai-flow-signal" />
-      <div className="ai-flow-signal two" />
-      <div className="ai-flow-signal three" />
-
-      {/* Detection */}
-
-      <FlowNode
-        className="one warning"
-        icon={<ShieldAlert size={19} />}
-        title="Unauthorized"
-        subtitle="Threat detected"
-        status="DETECTED"
-      />
-
-      {/* Investigation */}
-
-      <FlowNode
-        className="two"
-        icon={<ScanSearch size={19} />}
-        title="Investigation"
-        subtitle="Evidence captured"
-        status="VERIFIED"
-      />
-
-      {/* Protection */}
-
-      <FlowNode
-        className="three success"
-        icon={<CheckCircle2 size={19} />}
-        title="Protection"
-        subtitle="Threat removed"
-        status="RESOLVED"
-      />
-
-    </div>
-  );
-}
-
-/* =========================================================
-   FLOW NODE
-========================================================= */
-
-function FlowNode({
-  className,
-  icon,
-  title,
-  subtitle,
-  status,
-}) {
-  return (
-    <div className={`ai-flow-node ${className}`}>
-
-      <div className="ai-flow-icon">
-        {icon}
-      </div>
-
-      <div className="ai-flow-title">
-        {title}
-      </div>
-
-      <div className="ai-flow-subtitle">
-        {subtitle}
-      </div>
-
-      <div className="ai-flow-status">
-        {status}
-      </div>
-
     </div>
   );
 }

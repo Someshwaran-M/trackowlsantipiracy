@@ -1,42 +1,56 @@
 import React, { useEffect, useRef } from "react";
-
-import {
-  ArrowRight,
-  ArrowUpRight,
-  ScanSearch,
-  ShieldCheck,
-} from "lucide-react";
-
+import { ArrowRight, ArrowUpRight, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
-
+import HomeMain from "../main/HomeMain";
+import HomeAssets from "../main/HomeAssests";
+import HomeProtection from "../main/HomeProtection";
+import HomeChallenge from "../main/HomeChallenge";
+import HomeSolutions from "../main/HomeSolutions";
+import HomePlatform from "../main/HomePlatform";
+import HomeIndustries from "../main/HomeIndustries";
+import HomeTechnology from "../main/HomeTechnology";
+import HomeVisibility from "../main/HomeVisibility";
+import HomeAbout from "./HomeAbout";
 import Connect from "./Connect";
 import ProtectionEcosystem from "./ProtectionEcosystem";
-
-import HomeAbout from "./HomeAbout";
-import ClientReviews from "./ClientReviews";
-import Faq from "./Faq";
-
-
 import AntiPiracyAnimation from "../animations/AntiPiracyAnimation";
-
-import Plan from "./Plan";
 import HowItWorks from "./HowItWorks";
 import MonitoringTool from "./MonitoringTool";
 import ClientUseCases from "./ClientUseCases";
 import GettingStarted from "./GettingStarted";
+import Plan from "./Plan";
+import ClientReviews from "./ClientReviews";
+import HomeFAQ from "../main/HomeFAQ";
+import HomeCTA from "../main/HomeCTA";
+import HomeHowItWorks from "../main/HomeHowItWorks";
 
-/* =========================================================
-   VIEWPORT REVEAL
-========================================================= */
+const BRAND = "#ADD132";
+
+const categories = [
+  "Video & Film",
+  "Live Broadcasts",
+  "Music & Audio",
+  "Digital Publications",
+  "Games & Software",
+  "Brand Assets",
+];
+
+/* =========================================
+   SCROLL REVEAL
+========================================= */
 
 function Reveal({ children, className = "", delay = 0 }) {
   const elementRef = useRef(null);
 
   useEffect(() => {
     const element = elementRef.current;
-
     if (!element) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      element.classList.add("track-reveal-visible");
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -46,13 +60,12 @@ function Reveal({ children, className = "", delay = 0 }) {
         }
       },
       {
-        threshold: 0.08,
-        rootMargin: "0px 0px -25px 0px",
+        threshold: 0.05,
+        rootMargin: "0px 0px -15px 0px",
       }
     );
 
     observer.observe(element);
-
     return () => observer.disconnect();
   }, []);
 
@@ -67,714 +80,388 @@ function Reveal({ children, className = "", delay = 0 }) {
   );
 }
 
-/* =========================================================
-   HOME
-========================================================= */
+/* =========================================
+   HOMEPAGE
+========================================= */
 
 function Home() {
   return (
-    <main
-      className="
-        relative
-        w-full
-        max-w-full
-        overflow-x-hidden
-        bg-[#F8FAF5]
-        font-['Roboto',sans-serif]
-        text-[#101610]
-        dark:bg-[#050805]
-        dark:text-white
-      "
-    >
-      {/* =====================================================
-          HERO
-      ===================================================== */}
+    <main className="track-home-light w-full overflow-x-clip bg-[#F5F8F2] font-['Roboto',sans-serif] text-[#152019]">
+      {/* =====================================
+          01. HERO WITH BACKGROUND VIDEO
+      ===================================== */}
 
       <section
-        className="
-          relative
-          flex
-          min-h-[calc(100svh-72px)]
-          items-center
-          overflow-hidden
-          bg-[url('/home-light.png')]
-          bg-cover
-          bg-center
-          bg-no-repeat
-          dark:bg-[url('/home-dark.png')]
-          sm:min-h-[calc(100svh-90px)]
-        "
+        id="home"
+        className="track-hero relative isolate flex min-h-[600px] w-full items-center overflow-hidden sm:min-h-[660px] lg:min-h-[calc(100svh-88px)]"
       >
-        {/* Overlay */}
+        {/* Background fallback */}
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[#F5F8F2]" />
 
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[#F7FAF3]/45
-            dark:bg-[#050805]/35
-          "
-        />
-
-        {/* Main background glow */}
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            left-[65%]
-            top-[20%]
-            h-[260px]
-            w-[260px]
-            -translate-x-1/2
-            rounded-full
-            bg-[#ADD132]/10
-            blur-[80px]
-            sm:h-[340px]
-            sm:w-[340px]
-            sm:blur-[100px]
-            md:h-[420px]
-            md:w-[420px]
-            lg:h-[520px]
-            lg:w-[520px]
-            lg:blur-[140px]
-          "
-        />
-
-        {/* Bottom glow */}
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            -bottom-[100px]
-            -left-[100px]
-            h-[280px]
-            w-[280px]
-            rounded-full
-            bg-[#ADD132]/[0.06]
-            blur-[100px]
-            md:h-[400px]
-            md:w-[400px]
-          "
-        />
-
-        {/* =================================================
-            HERO CONTAINER
-        ================================================= */}
-
-        <div
-          className="
-            relative
-            z-10
-            mx-auto
-            grid
-            w-full
-            max-w-[1480px]
-            items-center
-            gap-10
-            px-5
-            py-14
-            sm:px-7
-            sm:py-16
-            md:px-10
-            md:py-20
-            lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)]
-            lg:gap-12
-            lg:px-12
-            lg:py-24
-            xl:grid-cols-[minmax(0,820px)_minmax(400px,1fr)]
-            xl:gap-16
-            xl:px-16
-          "
+        {/* Full-screen background video */}
+        <video
+          className="track-hero-video pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          tabIndex={-1}
         >
-          {/* =================================================
-              LEFT SIDE
-          ================================================= */}
+          <source src="/home.mp4" type="video/mp4" />
+        </video>
 
-          <div className="w-full max-w-[820px]">
-            {/* Eyebrow */}
+        {/* Video readability overlay */}
+        <div className="pointer-events-none absolute inset-0 z-[2] bg-white/25" />
 
+        {/* Gradient overlay */}
+        <div className="pointer-events-none absolute inset-0 z-[2] " />
+
+        {/* Premium lime-green ambient effects */}
+        <div className="track-ambient pointer-events-none absolute -right-24 top-10 z-[3] h-72 w-72 rounded-full bg-[#ADD132]/20 blur-[90px] sm:h-96 sm:w-96 lg:h-[480px] lg:w-[480px]" />
+
+        <div className="track-ambient pointer-events-none absolute -bottom-24 left-[12%] z-[3] h-64 w-64 rounded-full bg-[#ADD132]/15 blur-[90px]" />
+
+        {/* Hero content */}
+        <div className="relative z-10 mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-10 px-5 py-14 sm:px-8 sm:py-16 md:px-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12 lg:px-12 lg:py-16 xl:gap-16 xl:px-16">
+          {/* Hero text */}
+          <div className="relative z-10 w-full max-w-[600px]">
             <Reveal>
-              <div
-                className="
-                  mb-5
-                  flex
-                  items-center
-                  gap-3
-                  sm:mb-6
-                "
-              >
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span
-                    className="
-                      absolute
-                      inset-0
-                      animate-ping
-                      rounded-full
-                      bg-[#ADD132]
-                      opacity-60
-                    "
-                  />
+              <div className="mb-5 flex items-center gap-3">
+                <span className="h-[2px] w-8 rounded-full bg-[#ADD132]" />
 
-                  <span
-                    className="
-                      relative
-                      h-2
-                      w-2
-                      rounded-full
-                      bg-[#ADD132]
-                    "
-                  />
-                </span>
-
-                <span
-                  className="
-                    text-[11px]
-                    font-black
-                    uppercase
-                    tracking-[0.16em]
-                    text-[#658800]
-                    dark:text-[#ADD132]
-                    sm:text-xs
-                    sm:tracking-[0.18em]
-                  "
-                >
-                  Scan. Detect. Remove. Protect.
+                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#6D900B] sm:text-xs">
+                  Digital anti-piracy &amp; content protection
                 </span>
               </div>
             </Reveal>
 
-            {/* Heading */}
-
             <Reveal delay={80}>
-              <h1
-                className="
-                  max-w-3xl
-                  text-[34px]
-                  font-black
-                  leading-[0.95]
-                  tracking-[-0.05em]
-                  text-[#152019]
-                  dark:text-white
-                  sm:text-4xl
-                  md:text-5xl
-                  lg:text-6xl
-                "
-              >
-                Rights In.
-                <br />
-
-                <span className="text-[#6D900B] dark:text-[#ADD132]">
-                  Piracy Out.
+              <h1 className="max-w-[600px] text-[2.4rem] font-bold leading-[1.1] tracking-[-0.045em] text-[#152019] sm:text-5xl lg:text-[3.25rem] xl:text-[3.7rem]">
+                Protect your content.
+                <span className="mt-2 block text-[#6D900B]">
+                  Stop digital piracy.
                 </span>
               </h1>
             </Reveal>
 
-            {/* Description */}
+            <Reveal delay={140}>
+              <p className="mt-5 max-w-[510px] text-sm leading-7 text-[#4F5E53] sm:text-base sm:leading-8">
+                Technology, intelligence and enforcement workflows to help
+                rights holders identify suspected online infringement,
+                document evidence and protect valuable digital content
+                and brands.
+              </p>
+            </Reveal>
 
-            <Reveal delay={160}>
-              <div
-                className="
-                  mt-6
-                  flex
-                  max-w-[680px]
-                  items-start
-                  gap-4
-                  sm:mt-7
-                  lg:mt-8
-                "
-              >
-                <div
-                  className="
-                    mt-1
-                    h-[64px]
-                    w-[2px]
-                    shrink-0
-                    rounded-full
-                    bg-[#ADD132]
-                    sm:h-[66px]
-                  "
-                />
-
-                <p
-                  className="
-                    text-[14px]
-                    font-normal
-                    leading-[1.75]
-                    text-[#5E6A62]
-                    dark:text-white/60
-                    sm:text-[15px]
-                    sm:leading-7
-                    lg:text-base
-                  "
-                >
-                  TrackOwls finds pirated copies of your movies, music,
-                  sports and courses, and fake sites or accounts using your
-                  brand. Then we get them taken down.
-                </p>
+            {/* Protection process */}
+            <Reveal delay={190}>
+              <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#536056] sm:text-xs">
+                <span>Scan</span>
+                <span className="text-[#ADD132]">/</span>
+                <span>Detect</span>
+                <span className="text-[#ADD132]">/</span>
+                <span>Verify</span>
+                <span className="text-[#ADD132]">/</span>
+                <span>Protect</span>
               </div>
             </Reveal>
 
-            {/* Capabilities */}
-
+            {/* CTA buttons */}
             <Reveal delay={240}>
-              <div
-                className="
-                  mt-7
-                  grid
-                  gap-5
-                  sm:grid-cols-2
-                  sm:gap-6
-                  md:mt-8
-                  lg:mt-9
-                "
-              >
-                {/* Find pirated content */}
-
-                <div className="group flex min-w-0 items-center gap-3.5">
-                  <div
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      border
-                      border-[#ADD132]/35
-                      bg-white/50
-                      text-[#6F9500]
-                      shadow-[0_8px_30px_rgba(100,130,20,0.06)]
-                      backdrop-blur-md
-                      transition-all
-                      duration-300
-                      dark:bg-black/20
-                      dark:text-[#ADD132]
-                      sm:h-[52px]
-                      sm:w-[52px]
-                      lg:h-14
-                      lg:w-14
-                      group-hover:border-[#ADD132]/60
-                      group-hover:bg-[#ADD132]/10
-                    "
-                  >
-                    <ScanSearch
-                      size={21}
-                      strokeWidth={1.6}
-                    />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p
-                      className="
-                        text-[14px]
-                        font-black
-                        leading-5
-                        text-[#172018]
-                        dark:text-white
-                        sm:text-[15px]
-                      "
-                    >
-                      Find Pirated Content
-                    </p>
-
-                    <p
-                      className="
-                        mt-1
-                        text-[12px]
-                        leading-5
-                        text-[#707B73]
-                        dark:text-white/45
-                        sm:text-[13px]
-                      "
-                    >
-                      Discover unauthorized copies
-                    </p>
-                  </div>
-                </div>
-
-                {/* Protect rights */}
-
-                <div className="group flex min-w-0 items-center gap-3.5">
-                  <div
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      border
-                      border-[#ADD132]/35
-                      bg-white/50
-                      text-[#6F9500]
-                      shadow-[0_8px_30px_rgba(100,130,20,0.06)]
-                      backdrop-blur-md
-                      transition-all
-                      duration-300
-                      dark:bg-black/20
-                      dark:text-[#ADD132]
-                      sm:h-[52px]
-                      sm:w-[52px]
-                      lg:h-14
-                      lg:w-14
-                      group-hover:border-[#ADD132]/60
-                      group-hover:bg-[#ADD132]/10
-                    "
-                  >
-                    <ShieldCheck
-                      size={21}
-                      strokeWidth={1.6}
-                    />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p
-                      className="
-                        text-[14px]
-                        font-black
-                        leading-5
-                        text-[#172018]
-                        dark:text-white
-                        sm:text-[15px]
-                      "
-                    >
-                      Protect Your Rights
-                    </p>
-
-                    <p
-                      className="
-                        mt-1
-                        text-[12px]
-                        leading-5
-                        text-[#707B73]
-                        dark:text-white/45
-                        sm:text-[13px]
-                      "
-                    >
-                      Remove threats and protect your content
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Buttons */}
-
-            <Reveal delay={320}>
-              <div
-                className="
-                  mt-8
-                  flex
-                  w-full
-                  flex-col
-                  gap-3
-                  sm:w-auto
-                  sm:flex-row
-                  lg:mt-9
-                "
-              >
+              <div className="mt-7 flex w-full flex-col gap-3 min-[480px]:flex-row sm:w-auto">
                 <Link
                   to="/request-demo"
-                  className="
-                    group
-                    flex
-                    min-h-[52px]
-                    w-full
-                    items-center
-                    justify-between
-                    gap-4
-                    rounded-full
-                    bg-[#ADD132]
-                    py-1.5
-                    pl-5
-                    pr-1.5
-                    text-[13px]
-                    font-black
-                    text-[#101600]
-                    shadow-[0_10px_30px_rgba(173,209,50,0.12)]
-                    transition-all
-                    duration-300
-                    active:scale-[0.98]
-                    sm:w-fit
-                    sm:min-w-[165px]
-                    sm:pl-6
-                    hover:-translate-y-1
-                    hover:bg-[#BDE640]
-                    hover:shadow-[0_18px_50px_rgba(173,209,50,0.25)]
-                  "
+                  className="group inline-flex min-h-[46px] items-center justify-center gap-3 rounded-md border border-[#ADD132] bg-[#ADD132] px-5 py-3 text-sm font-semibold text-[#152019] transition duration-300 hover:-translate-y-0.5 hover:border-[#6D900B] hover:bg-[#6D900B] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#ADD132] focus:ring-offset-2"
                 >
-                  <span>Request a free piracy audit</span>
+                  Request a consultation
 
-                  <span
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#17200F]
-                      text-white
-                      transition-transform
-                      duration-300
-                      group-hover:rotate-45
-                    "
-                  >
-                    <ArrowUpRight size={16} />
-                  </span>
+                  <ArrowUpRight
+                    size={17}
+                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
                 </Link>
 
                 <Link
-                  to="/contact"
-                  className="
-                    group
-                    flex
-                    min-h-[52px]
-                    w-full
-                    items-center
-                    justify-between
-                    gap-4
-                    rounded-full
-                    border
-                    border-black/10
-                    bg-white/50
-                    px-5
-                    text-[13px]
-                    font-bold
-                    text-[#172019]
-                    backdrop-blur-xl
-                    transition-all
-                    duration-300
-                    active:scale-[0.98]
-                    dark:border-white/10
-                    dark:bg-white/[0.04]
-                    dark:text-white
-                    sm:w-fit
-                    sm:min-w-[185px]
-                    sm:px-6
-                    hover:-translate-y-1
-                    hover:border-[#ADD132]/50
-                    hover:bg-[#ADD132]/10
-                    dark:hover:bg-white/[0.08]
-                  "
+                  to="/services"
+                  className="group inline-flex min-h-[46px] items-center justify-center gap-3 rounded-md border border-[#DCE4D8] bg-white/90 px-5 py-3 text-sm font-semibold text-[#536056] transition duration-300 hover:-translate-y-0.5 hover:border-[#ADD132] hover:bg-white hover:text-[#152019] focus:outline-none focus:ring-2 focus:ring-[#ADD132] focus:ring-offset-2"
                 >
-                  <span>Report piracy</span>
+                  Explore solutions
 
                   <ArrowRight
                     size={16}
-                    className="
-                      shrink-0
-                      transition-transform
-                      duration-300
-                      group-hover:translate-x-1
-                    "
+                    className="transition-transform duration-300 group-hover:translate-x-1"
                   />
                 </Link>
               </div>
             </Reveal>
 
-            
-
-            {/* Tags */}
-
-            <Reveal delay={400}>
-              <div
-                className="
-                  mt-7
-                  flex
-                  flex-wrap
-                  gap-x-4
-                  gap-y-2.5
-                  sm:mt-8
-                  sm:gap-x-5
-                  lg:gap-x-6
-                "
-              >
-                {[
-                  "Monitoring",
-                  "Threat Detection",
-                  "IP Protection",
-                  "Digital Intelligence",
-                ].map((item) => (
+            {/* Supported asset categories */}
+            <Reveal delay={300}>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {categories.map((item) => (
                   <span
                     key={item}
-                    className="
-                      flex
-                      items-center
-                      gap-2
-                      text-[10px]
-                      font-black
-                      uppercase
-                      tracking-[0.1em]
-                      text-[#737F76]
-                      dark:text-white/40
-                      sm:text-[11px]
-                    "
+                    className="rounded-md border border-[#DCE4D8] bg-white/80 px-3 py-2 text-[10px] font-medium text-[#536056] transition duration-200 hover:border-[#ADD132] hover:text-[#6D900B] sm:text-xs"
                   >
-                    <span
-                      className="
-                        h-1.5
-                        w-1.5
-                        shrink-0
-                        rounded-full
-                        bg-[#ADD132]
-                      "
-                    />
-
                     {item}
                   </span>
                 ))}
               </div>
             </Reveal>
-          </div>
 
-          {/* =================================================
-              RIGHT SIDE - SEPARATE CODED ANIMATION
-          ================================================= */}
+            {/* Trust statement */}
+            <Reveal delay={350}>
+              <div className="mt-7 flex items-start gap-3 text-xs leading-6 text-[#536056] sm:text-sm">
+                <ShieldCheck
+                  size={19}
+                  className="mt-0.5 shrink-0 text-[#6D900B]"
+                />
 
-          <Reveal
-            delay={180}
-            className="
-              flex
-              w-full
-              items-center
-              justify-center
-              lg:justify-end
-            "
-          >
-            <AntiPiracyAnimation />
-          </Reveal>
-        </div>
-
-
-
-<div
-                className="
-                  absolute
-                  right-0
-                  top-0
-                  flex
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-[#ADD132]/25
-                  bg-white/65
-                  px-3
-                  py-1.5
-                  mt-5
-                  backdrop-blur-xl
-                  dark:bg-[#071006]/70
-                "
-              >
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#ADD132] shadow-[0_0_8px_#ADD132]" />
-
-                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#566152] dark:text-white/55">
-                  Live Monitoring
-                </span>
-
-                <span className="h-3 w-px bg-black/10 dark:bg-white/10" />
-
-                <span className="text-[8px] font-black text-[#719000] dark:text-[#ADD132]">
-                  24/7
+                <span>
+                  Evidence-led workflows. Analyst review. Clear case visibility.
                 </span>
               </div>
+            </Reveal>
+          </div>
 
-
-
-        {/* =================================================
-            SCROLL INDICATOR
-        ================================================= */}
-
-        <div
-          className="
-            absolute
-            bottom-6
-            left-1/2
-            z-20
-            hidden
-            -translate-x-1/2
-            items-center
-            gap-3
-            lg:flex
-          "
-        >
-          <span
-            className="
-              text-[10px]
-              font-black
-              uppercase
-              tracking-[0.2em]
-              text-black/35
-              dark:text-white/30
-            "
+          {/* Hero visual */}
+          <Reveal
+            delay={160}
+            className="track-visual-reveal relative flex min-w-0 w-full items-center justify-center lg:justify-end"
           >
-            Scroll to explore
-          </span>
+            <div className="track-visual relative w-full max-w-[650px]">
+              <div className="overflow-hidden rounded-xl border border-[#DCE4D8] bg-white/95 shadow-[0_20px_60px_rgba(21,32,25,0.10)]">
+                <div className="relative min-w-0 p-2 sm:p-4">
+                  <AntiPiracyAnimation />
+                </div>
 
-          <ArrowRight
-            size={14}
-            className="
-              animate-[track-scroll-arrow_1.5s_ease-in-out_infinite]
-              text-[#719800]
-              dark:text-[#ADD132]
-            "
-          />
+                {/* Supporting visual information */}
+                <div className="grid grid-cols-2 gap-3 border-t border-[#DCE4D8] bg-white/95 px-4 py-4 sm:px-5 sm:py-5">
+                  <div>
+                    <p className="text-[10px] font-medium text-[#68746C] sm:text-xs">
+                      Protection workflow
+                    </p>
+
+                    <p className="mt-1.5 text-xs font-semibold text-[#152019] sm:text-sm">
+                      Discovery to enforcement
+                    </p>
+                  </div>
+
+                  <div className="border-l border-[#DCE4D8] pl-4">
+                    <p className="text-[10px] font-medium text-[#68746C] sm:text-xs">
+                      Our approach
+                    </p>
+
+                    <p className="mt-1.5 text-xs font-semibold text-[#6D900B] sm:text-sm">
+                      Scan · Detect · Protect
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                to="/how-it-works"
+                className="group mx-auto mt-5 flex w-fit max-w-full items-center justify-center gap-2.5 rounded-lg border border-[#DCE4D8] bg-white/95 px-4 py-3 text-center text-xs font-semibold text-[#536056] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-[#ADD132] hover:text-[#6D900B] sm:text-sm"
+              >
+                Explore how protection works
+
+                <ArrowUpRight
+                  size={15}
+                  className="shrink-0 text-[#6D900B] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-     <div id="how-it-works">
-        <HowItWorks />
-      </div>
+      {/* =====================================
+          02. INTRODUCTION
+      ===================================== */}
+      <section id="home-main">
+        <Reveal>
+          <HomeMain />
+        </Reveal>
+      </section>
 
-      <HomeAbout />
+      {/* =====================================
+          03. PROTECTED ASSETS
+      ===================================== */}
+      <section id="protected-assets">
+        <Reveal>
+          <HomeAssets />
+        </Reveal>
+      </section>
 
-      <Connect />
+      {/* =====================================
+          04. PROTECTION DETAILS
+      ===================================== */}
+      <section id="protection-details">
+        <Reveal>
+          <HomeProtection />
+        </Reveal>
+      </section>
 
-      <ProtectionEcosystem />
+      {/* =====================================
+          05. THE CHALLENGE
+      ===================================== */}
+      <section id="protection-challenge">
+        <Reveal>
+          <HomeChallenge />
+        </Reveal>
+      </section>
 
-      <MonitoringTool />
+      {/* =====================================
+          06. SOLUTIONS
+      ===================================== */}
+      <section id="protection-solutions">
+        <Reveal>
+          <HomeSolutions />
+        </Reveal>
+      </section>
 
-      <ClientUseCases />
+      {/* =====================================
+          07. HOW PROTECTION WORKS
+      ===================================== */}
+      <section id="home-how-it-works">
+        <Reveal>
+          <HomeHowItWorks />
+        </Reveal>
+      </section>
 
-      <GettingStarted />
+      {/* =====================================
+          08. PLATFORM OVERVIEW
+      ===================================== */}
+      <section id="platform-overview">
+        <Reveal>
+          <HomePlatform />
+        </Reveal>
+      </section>
 
-      <Plan />
+      {/* =====================================
+          09. INDUSTRIES
+      ===================================== */}
+      <section id="industries">
+        <Reveal>
+          <HomeIndustries />
+        </Reveal>
+      </section>
 
-      <ClientReviews />
+      {/* =====================================
+          10. TECHNOLOGY & HUMAN REVIEW
+      ===================================== */}
+      <section id="technology">
+        <Reveal>
+          <HomeTechnology />
+        </Reveal>
+      </section>
 
-      <Faq />
+      {/* =====================================
+          11. COVERAGE & REPORTING
+      ===================================== */}
+      <section id="visibility-reporting">
+        <Reveal>
+          <HomeVisibility />
+        </Reveal>
+      </section>
 
-      {/* =====================================================
-          HOME ANIMATIONS
-      ===================================================== */}
+      {/* =====================================
+          12. PROTECTION ECOSYSTEM
+      ===================================== */}
+      <section id="protection-ecosystem">
+        <Reveal>
+          <ProtectionEcosystem />
+        </Reveal>
+      </section>
 
+      {/* =====================================
+          13. PLANS
+      ===================================== */}
+      <section id="protection-plans">
+        <Reveal>
+          <Plan />
+        </Reveal>
+      </section>
+
+      {/* =====================================
+          14. CLIENT REVIEWS
+      ===================================== */}
+      <section id="client-reviews">
+        <Reveal>
+          <ClientReviews />
+        </Reveal>
+      </section>
+
+      {/* =====================================
+          15. FAQ
+      ===================================== */}
+      <section id="home-faq">
+        <Reveal>
+          <HomeFAQ />
+        </Reveal>
+      </section>
+
+      {/* =====================================
+          16. FINAL CONSULTATION CTA
+      ===================================== */}
+      <section id="home-cta">
+        <Reveal>
+          <HomeCTA />
+        </Reveal>
+      </section>
+
+      {/* =====================================
+          SHARED HOMEPAGE STYLES
+      ===================================== */}
       <style>{`
-        /* ================================================
-           REVEAL
-        ================================================= */
+        .track-home-light {
+          background: #F5F8F2;
+          color: #152019;
+          font-family: 'Roboto', sans-serif;
+        }
 
-        .track-reveal,
-        .track-reveal *,
-        button,
-        a,
-        input,
-        textarea,
-        select {
-          font-family: "Roboto", sans-serif;
+        .track-home-light,
+        .track-home-light *,
+        .track-home-light *::before,
+        .track-home-light *::after {
+          box-sizing: border-box;
+        }
+
+        .track-home-light * {
+          font-family: inherit;
+        }
+
+        .track-home-light section {
+          scroll-margin-top: 88px;
+        }
+
+        .track-hero {
+          isolation: isolate;
+          position: relative;
+          background: #F5F8F2;
+          color: #152019;
+        }
+
+        .track-hero-video {
+          object-position: center;
+        }
+
+        .track-visual {
+          isolation: isolate;
+        }
+
+        .track-ambient {
+          animation: track-ambient-pulse 8s ease-in-out infinite alternate;
         }
 
         .track-reveal {
           opacity: 0;
-          transform: translate3d(0, 24px, 0);
+          transform: translate3d(0, 16px, 0);
           transition:
-            opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-            transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+            opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+            transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
           will-change: opacity, transform;
         }
 
@@ -783,40 +470,30 @@ function Home() {
           transform: translate3d(0, 0, 0);
         }
 
-        /* ================================================
-           SCROLL ARROW
-        ================================================= */
-
-        @keyframes track-scroll-arrow {
-          0%,
-          100% {
-            transform: translateX(0);
+        @keyframes track-ambient-pulse {
+          from {
+            opacity: 0.55;
+            transform: scale(0.96);
           }
 
-          50% {
-            transform: translateX(5px);
+          to {
+            opacity: 1;
+            transform: scale(1.05);
           }
         }
 
-        /* ================================================
-           MOBILE
-        ================================================= */
+        @media (max-width: 1023px) {
+          .track-hero {
+            min-height: auto;
+          }
+        }
 
         @media (max-width: 639px) {
-          section {
-            scroll-margin-top: 78px;
-          }
-
-          html {
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-          }
-
           .track-reveal {
-            transform: translate3d(0, 18px, 0);
+            transform: translate3d(0, 12px, 0);
             transition:
-              opacity 550ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 550ms cubic-bezier(0.16, 1, 0.3, 1);
+              opacity 450ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
           }
 
           .track-reveal-visible {
@@ -824,36 +501,20 @@ function Home() {
           }
         }
 
-        /* ================================================
-           TABLET
-        ================================================= */
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-          section {
-            scroll-margin-top: 90px;
-          }
-        }
-
-        /* ================================================
-           TOUCH
-        ================================================= */
-
-        @media (hover: none) and (pointer: coarse) {
-          .track-reveal {
-            backface-visibility: hidden;
-          }
-        }
-
-        /* ================================================
-           REDUCED MOTION
-        ================================================= */
-
         @media (prefers-reduced-motion: reduce) {
           .track-reveal,
           .track-reveal-visible {
             opacity: 1 !important;
             transform: none !important;
             transition: none !important;
+          }
+
+          .track-ambient {
+            animation: none !important;
+          }
+
+          .track-hero-video {
+            display: none;
           }
         }
       `}</style>
